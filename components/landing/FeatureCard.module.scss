@@ -1,0 +1,27 @@
+@use "../../styles/tokens" as *;
+
+.card {
+  min-height: 280px;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+
+  &:hover { border-color: rgba($brand, 0.55); box-shadow: $shadow-sm; transform: translateY(-3px); }
+  h3 { margin: 2.8rem 0 0.65rem; font-size: 1.4rem; letter-spacing: -0.025em; }
+  p { margin: 0; color: $muted; line-height: 1.65; }
+}
+
+.icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  color: $brand;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: rgba($brand, 0.1);
+  border-radius: 50%;
+}

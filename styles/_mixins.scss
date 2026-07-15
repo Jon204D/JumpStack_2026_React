@@ -1,0 +1,9 @@
+@use "tokens" as *;
+
+@mixin content-width {
+  width: min(calc(100% - 2rem), $content-width);
+  margin-inline: auto;
+}
+
+@mixin tablet { @media (max-width: 960px) { @content; } }
+@mixin mobile { @media (max-width: 640px) { @content; } }

@@ -1,0 +1,42 @@
+@use "../../styles/tokens" as *;
+@use "../../styles/mixins" as *;
+
+.page {
+  @include content-width;
+  display: grid;
+  min-height: 100svh;
+  padding-block: 2rem;
+  grid-template-rows: auto 1fr auto;
+  place-items: center;
+}
+
+.brand {
+  display: inline-flex;
+  gap: 0.7rem;
+  align-items: center;
+  justify-self: start;
+  color: $ink;
+  font-weight: 750;
+  text-decoration: none;
+
+  span { display: grid; width: 38px; height: 38px; place-items: center; color: #fff; font-size: 0.72rem; background: $brand; border-radius: 50%; }
+}
+
+.panel {
+  width: min(100%, 480px);
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+}
+
+.intro {
+  margin-bottom: 2rem;
+  text-align: center;
+  p { margin: 0 0 0.65rem; color: $brand; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+  h1 { margin: 0; font-size: clamp(2.3rem, 8vw, 3.25rem); letter-spacing: -0.055em; }
+  span { display: block; margin-top: 0.75rem; color: $muted; line-height: 1.55; }
+}
+
+.help { max-width: 520px; margin: 0; color: $muted; font-size: 0.82rem; line-height: 1.5; text-align: center; }

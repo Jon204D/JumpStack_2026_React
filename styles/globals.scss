@@ -1,0 +1,20 @@
+@use "tokens" as *;
+
+:root { --background: #{$canvas}; --foreground: #{$ink}; color-scheme: light; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  min-width: 320px;
+  margin: 0;
+  color: $ink;
+  background: radial-gradient(circle at 85% 5%, rgba($brand, 0.09), transparent 28rem), $canvas;
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+button, input, textarea, select { font: inherit; }
+::selection { color: #fff; background: $brand; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}

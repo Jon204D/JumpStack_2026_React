@@ -1,0 +1,206 @@
+@use "../styles/tokens" as *;
+@use "../styles/mixins" as *;
+
+.hero {
+  @include content-width;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 0.86fr);
+  gap: clamp(3rem, 7vw, 7.5rem);
+  align-items: center;
+  min-height: calc(100svh - 84px);
+  padding-block: clamp(4rem, 8vw, 7rem);
+}
+
+.heroContent h1 {
+  max-width: 760px;
+  margin: 0;
+  font-size: clamp(3.4rem, 7vw, 6.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.065em;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: $brand;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.heroCopy {
+  max-width: 660px;
+  margin: 1.75rem 0 0;
+  color: $muted;
+  font-size: clamp(1.12rem, 2vw, 1.35rem);
+  line-height: 1.65;
+}
+
+.heroActions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2rem; }
+
+.trustList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin: 2rem 0 0;
+  padding: 0;
+  color: $muted;
+  font-size: 0.92rem;
+  list-style: none;
+  li::before { margin-right: 0.5rem; color: $brand; content: "✓"; }
+}
+
+.preview {
+  position: relative;
+  padding: clamp(1.4rem, 3vw, 2rem);
+  overflow: hidden;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+
+  &::before {
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    top: -130px;
+    right: -90px;
+    background: rgba($brand, 0.12);
+    border-radius: 50%;
+    content: "";
+  }
+}
+
+.previewTopline {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid $border;
+
+  strong {
+    display: block;
+    margin-top: 0.35rem;
+    font-family: var(--font-geist-mono), monospace;
+    font-size: clamp(1.9rem, 3vw, 2.55rem);
+    letter-spacing: -0.055em;
+  }
+}
+
+.previewLabel, .accountCard span, .accountCard small, .activityRow span { color: $muted; }
+
+.status {
+  padding: 0.45rem 0.7rem;
+  color: $success;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #e5f3e9;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.accountList { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-top: 1.25rem; }
+
+.accountCard {
+  display: flex;
+  min-height: 168px;
+  padding: 1.25rem;
+  flex-direction: column;
+  background: $ink;
+  border-radius: $radius-md;
+
+  span, small { color: rgba(255, 255, 255, 0.68); }
+  strong {
+    margin: auto 0 0.2rem;
+    color: #fff;
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 1.4rem;
+  }
+}
+
+.savingsCard { background: $brand; }
+
+.activityRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.8rem;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: $canvas;
+  border-radius: $radius-sm;
+  span { display: block; margin-top: 0.18rem; font-size: 0.83rem; }
+}
+
+.activityIcon {
+  display: grid !important;
+  width: 38px;
+  height: 38px;
+  margin: 0 !important;
+  place-items: center;
+  color: $brand !important;
+  background: rgba($brand, 0.1);
+  border-radius: 50%;
+}
+
+.activityAmount { font-family: var(--font-geist-mono), monospace; }
+.capabilities { @include content-width; padding-block: clamp(5rem, 10vw, 8rem); }
+
+.sectionHeading {
+  max-width: 720px;
+  margin-bottom: 3rem;
+  h2, p { margin-bottom: 0; }
+  h2 { font-size: clamp(2.3rem, 5vw, 4rem); line-height: 1.08; letter-spacing: -0.045em; }
+  > p:last-child { color: $muted; font-size: 1.1rem; line-height: 1.65; }
+}
+
+.featureGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+
+.security {
+  @include content-width;
+  display: grid;
+  grid-template-columns: auto minmax(0, 720px);
+  gap: 1.5rem;
+  align-items: start;
+  justify-content: center;
+  padding-block: clamp(4rem, 8vw, 6rem);
+  h2 { margin: 0; font-size: clamp(2rem, 4vw, 3.4rem); letter-spacing: -0.04em; }
+  p:last-child { color: $muted; font-size: 1.08rem; line-height: 1.7; }
+}
+
+.securityMark {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  color: #fff;
+  font-size: 1.25rem;
+  background: $brand;
+  border-radius: 50%;
+}
+
+.footer {
+  @include content-width;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding-block: 2rem;
+  color: $muted;
+  border-top: 1px solid $border;
+  font-size: 0.88rem;
+}
+
+@include tablet {
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .preview { max-width: 720px; }
+  .featureGrid { grid-template-columns: 1fr; }
+}
+
+@include mobile {
+  .heroContent h1 { font-size: clamp(3rem, 16vw, 4.5rem); }
+  .accountList { grid-template-columns: 1fr; }
+  .previewTopline, .footer { flex-direction: column; }
+  .security { grid-template-columns: 1fr; }
+}

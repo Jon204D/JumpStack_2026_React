@@ -1,65 +1,130 @@
-import Image from "next/image";
+import { FeatureCard } from "@/components/landing/FeatureCard";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { ButtonLink } from "@/components/ui/Button";
+import styles from "./page.module.scss";
+
+const features = [
+  {
+    icon: "01",
+    title: "See the full picture",
+    description:
+      "Review checking and savings balances together, with the account details that matter close at hand.",
+  },
+  {
+    icon: "02",
+    title: "Move money confidently",
+    description:
+      "Deposit, withdraw, and transfer with clear confirmations and safeguards for every action.",
+  },
+  {
+    icon: "03",
+    title: "Built for every role",
+    description:
+      "Customers focus on their own accounts while administrators manage customers and account access.",
+  },
+] as const;
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main>
+      <SiteHeader />
+
+      <section className={styles.hero} aria-labelledby="hero-title">
+        <div className={styles.heroContent}>
+          <p className={styles.eyebrow}>A clearer way to bank</p>
+          <h1 id="hero-title">Your money, mapped with confidence.</h1>
+          <p className={styles.heroCopy}>
+            Ledger Atlas brings everyday banking into one calm, secure
+            workspace—so balances, transfers, and account activity always make
+            sense.
+          </p>
+          <div className={styles.heroActions}>
+            <ButtonLink href="/login">Sign in securely</ButtonLink>
+            <ButtonLink href="#security" variant="secondary">
+              How we protect you
+            </ButtonLink>
+          </div>
+          <ul className={styles.trustList} aria-label="Product benefits">
+            <li>Clear account ownership</li>
+            <li>Role-based access</li>
+            <li>Transaction safeguards</li>
+          </ul>
+        </div>
+
+        <div className={styles.preview} aria-label="Example banking overview">
+          <div className={styles.previewTopline}>
+            <div>
+              <span className={styles.previewLabel}>Available balance</span>
+              <strong>$14,550.33</strong>
+            </div>
+            <span className={styles.status}>Accounts healthy</span>
+          </div>
+
+          <div className={styles.accountList}>
+            <article className={styles.accountCard}>
+              <span>Everyday checking</span>
+              <strong>$2,450.33</strong>
+              <small>CHK • 100001</small>
+            </article>
+            <article className={`${styles.accountCard} ${styles.savingsCard}`}>
+              <span>Growth savings</span>
+              <strong>$12,100.00</strong>
+              <small>SAV • 100001</small>
+            </article>
+          </div>
+
+          <div className={styles.activityRow}>
+            <span className={styles.activityIcon} aria-hidden="true">
+              ↗
+            </span>
+            <div>
+              <strong>Transfer completed</strong>
+              <span>Checking to savings</span>
+            </div>
+            <strong className={styles.activityAmount}>$200.00</strong>
+          </div>
+        </div>
+      </section>
+
+      <section
+        className={styles.capabilities}
+        id="capabilities"
+        aria-labelledby="capabilities-title"
+      >
+        <div className={styles.sectionHeading}>
+          <p className={styles.eyebrow}>Everyday banking, simplified</p>
+          <h2 id="capabilities-title">Everything important. Nothing noisy.</h2>
+          <p>
+            A focused experience for understanding your accounts and acting on
+            them without guesswork.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className={styles.featureGrid}>
+          {features.map((feature) => (
+            <FeatureCard key={feature.title} {...feature} />
+          ))}
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className={styles.security} id="security">
+        <div className={styles.securityMark} aria-hidden="true">
+          ✓
+        </div>
+        <div>
+          <p className={styles.eyebrow}>Designed around trust</p>
+          <h2>Access stays with the right person.</h2>
+          <p>
+            Role-aware permissions keep customer and administrator workflows
+            distinct, while clear feedback explains when an action needs
+            attention.
+          </p>
+        </div>
+      </section>
+
+      <footer className={styles.footer}>
+        <span>Ledger Atlas</span>
+        <span>Console Bank App · JumpStack 2026</span>
+      </footer>
+    </main>
   );
 }
