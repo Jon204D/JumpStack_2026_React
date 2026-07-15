@@ -57,7 +57,8 @@
     list-style: none;
   }
 
-  li > span {
+  li > span,
+  li > a {
     display: grid;
     min-height: 46px;
     padding: 0.7rem 0.8rem;
@@ -67,7 +68,16 @@
     border-radius: $radius-sm;
   }
 
-  li > span > span {
+  li > a {
+    color: #d4e1e4;
+    text-decoration: none;
+
+    &:hover { color: #fff; background: rgba($brand, 0.2); }
+    &:focus-visible { outline: 3px solid rgba(#73d3c8, 0.35); outline-offset: 2px; }
+  }
+
+  li > span > span,
+  li > a > span {
     color: #85aaa7;
     font-family: var(--font-geist-mono);
     font-size: 0.72rem;

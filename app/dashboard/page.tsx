@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { AdminDashboard } from "@/components/dashboard/AdminDashboard";
+import { CustomerDashboard } from "@/components/dashboard/CustomerDashboard";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import styles from "./page.module.scss";
 
@@ -27,11 +28,18 @@ export default function DashboardPage() {
           username={session.username}
         />
       ) : (
-        <section className={styles.customerWelcome}>
-          <p>Personal banking</p>
-          <h1>Welcome, {session.username}.</h1>
-          <span>Your account overview is the next dashboard target.</span>
-        </section>
+        session.customerId ? (
+          <CustomerDashboard
+            customerId={session.customerId}
+            password={session.password}
+            username={session.username}
+          />
+        ) : (
+          <section className={styles.sessionError} role="alert">
+            This customer login is not linked to a customer profile. Please
+            contact an administrator.
+          </section>
+        )
       )}
     </DashboardShell>
   );

@@ -73,3 +73,47 @@ export type AdminCreateAccountRequest = {
   admin: LoginRequest;
   customerId: string;
 };
+
+export type TransactionType = "DEPOSIT" | "WITHDRAWAL" | "TRANSFER";
+
+export type BankTransaction = {
+  amount: number;
+  createdAt: string;
+  destinationAccountNumber: string | null;
+  id: string;
+  sourceAccountNumber: string | null;
+  type: TransactionType;
+};
+
+export type CustomerOverviewRequest = {
+  credentials: LoginRequest;
+  customerId: string;
+};
+
+export type CustomerOverviewResponse = {
+  accounts: Account[];
+  transactions: BankTransaction[];
+};
+
+export type MoneyMovementOperation =
+  | {
+      accountNumber: string;
+      amount: number;
+      type: "DEPOSIT" | "WITHDRAWAL";
+    }
+  | {
+      amount: number;
+      destinationAccountNumber: string;
+      sourceAccountNumber: string;
+      type: "TRANSFER";
+    };
+
+export type CustomerMoneyMovementRequest = {
+  credentials: LoginRequest;
+  operation: MoneyMovementOperation;
+};
+
+export type MoneyMovementResponse = {
+  account?: Account;
+  message: string;
+};

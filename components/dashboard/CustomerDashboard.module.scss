@@ -1,0 +1,151 @@
+@use "../../styles/tokens" as *;
+@use "../../styles/mixins" as *;
+
+.heading {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  p { margin: 0 0 0.55rem; color: $brand; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; }
+  h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.25rem); letter-spacing: -0.055em; }
+  > div > span { display: block; margin-top: 0.7rem; color: $muted; }
+}
+
+.totalBalance {
+  min-width: 230px;
+  padding: 1rem 1.15rem;
+  color: #fff;
+  background: linear-gradient(135deg, $ink, #1f484b);
+  border-radius: $radius-md;
+  box-shadow: $shadow-sm;
+
+  span { margin: 0 !important; color: #b6cacd !important; font-size: 0.7rem; }
+  strong { display: block; margin-top: 0.3rem; font-size: 1.65rem; letter-spacing: -0.045em; }
+  small { display: block; margin-top: 0.25rem; color: #b6cacd; font-size: 0.66rem; }
+}
+
+.success,
+.error {
+  display: flex;
+  padding: 0.85rem 1rem;
+  margin-top: 1.25rem;
+  gap: 0.6rem;
+  align-items: center;
+  border-radius: $radius-sm;
+}
+
+.success { color: $success; font-weight: 700; background: #e9f6ec; border: 1px solid #bdddc5; }
+.error {
+  color: $danger;
+  background: #fce8e8;
+  border: 1px solid #edc1c1;
+
+  button { margin-left: auto; color: $danger; font-weight: 750; background: transparent; border: 0; cursor: pointer; text-decoration: underline; }
+}
+
+.accountsSection { margin-top: 2rem; scroll-margin-top: 1rem; }
+
+.sectionHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  p { margin: 0 0 0.3rem; color: $brand; font-size: 0.66rem; font-weight: 800; letter-spacing: 0.11em; text-transform: uppercase; }
+  h2 { margin: 0; font-size: 1.3rem; letter-spacing: -0.03em; }
+  > span { padding: 0.28rem 0.55rem; color: $muted; font-size: 0.68rem; background: $canvas; border-radius: 999px; }
+}
+
+.accountGrid {
+  display: grid;
+  margin-top: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.accountCard {
+  position: relative;
+  min-height: 225px;
+  padding: 1.35rem;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(145deg, #0f766e, #11464a);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+
+  &::after { position: absolute; right: -55px; bottom: -70px; width: 190px; height: 190px; content: ""; background: rgba(#fff, 0.07); border-radius: 50%; }
+  > div { display: flex; align-items: center; justify-content: space-between; }
+  > strong { display: block; margin-top: 2.4rem; font-size: clamp(1.9rem, 4vw, 2.7rem); letter-spacing: -0.055em; }
+  > p { margin: 0.3rem 0 0; color: #c8e4e1; font-size: 0.72rem; }
+  footer { position: absolute; right: 1.35rem; bottom: 1.2rem; left: 1.35rem; z-index: 1; display: flex; justify-content: space-between; color: #d9eeec; font-family: var(--font-geist-mono); font-size: 0.68rem; }
+}
+
+.accountCard:nth-child(even) { background: linear-gradient(145deg, #273843, #13232e); }
+.accountType { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase; }
+.accountMark { display: grid; width: 34px; height: 34px; place-items: center; font-weight: 850; background: rgba(#fff, 0.13); border: 1px solid rgba(#fff, 0.18); border-radius: 50%; }
+
+.loading {
+  display: grid;
+  min-height: 180px;
+  margin-top: 1rem;
+  place-items: center;
+  color: $muted;
+  background: $surface;
+  border: 1px dashed $border;
+  border-radius: $radius-md;
+}
+
+.workspaceGrid {
+  display: grid;
+  margin-top: 1rem;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.9fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.activity {
+  padding: 1.4rem;
+  scroll-margin-top: 1rem;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+.transactionList { padding: 0; margin: 1rem 0 0; list-style: none; }
+.transactionList li {
+  display: grid;
+  padding: 0.85rem 0;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.7rem;
+  align-items: center;
+  border-bottom: 1px solid rgba($border, 0.75);
+
+  &:last-child { padding-bottom: 0; border-bottom: 0; }
+  > div { display: grid; gap: 0.15rem; }
+  > div strong { font-size: 0.78rem; }
+  > div span,
+  time { color: $muted; font-size: 0.65rem; }
+  > strong { font-size: 0.78rem; }
+}
+
+.transactionIcon { display: grid; width: 34px; height: 34px; place-items: center; color: $brand; font-weight: 850; background: rgba($brand, 0.09); border-radius: 50%; }
+.credit { color: $success; }
+.debit { color: $danger; }
+.neutral { color: $ink; }
+
+.emptyActivity { display: grid; min-height: 210px; place-content: center; gap: 0.35rem; color: $muted; text-align: center; }
+.emptyActivity strong { color: $ink; }
+.emptyActivity span { max-width: 300px; font-size: 0.75rem; line-height: 1.5; }
+
+@include tablet {
+  .workspaceGrid { grid-template-columns: 1fr; }
+}
+
+@include mobile {
+  .heading { align-items: stretch; flex-direction: column; }
+  .totalBalance { min-width: 0; }
+  .accountGrid { grid-template-columns: 1fr; }
+  .transactionList li { grid-template-columns: auto 1fr; }
+  .transactionList li > strong { grid-column: 2; }
+}

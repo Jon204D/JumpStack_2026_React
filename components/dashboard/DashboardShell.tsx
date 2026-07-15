@@ -15,7 +15,11 @@ type DashboardShellProps = {
 };
 
 const adminNavigation = ["Overview", "Customers", "Accounts"];
-const customerNavigation = ["Overview", "My accounts", "Activity"];
+const customerNavigation = [
+  { href: "#overview", label: "Overview" },
+  { href: "#accounts", label: "My accounts" },
+  { href: "#activity", label: "Activity" },
+];
 
 export function DashboardShell({
   children,
@@ -24,7 +28,6 @@ export function DashboardShell({
 }: DashboardShellProps) {
   const router = useRouter();
   const { signOut } = useAuth();
-  const navigation = role === "ADMIN" ? adminNavigation : customerNavigation;
 
   function handleSignOut() {
     signOut();
@@ -42,20 +45,34 @@ export function DashboardShell({
         <nav aria-label="Dashboard navigation">
           <p>{role === "ADMIN" ? "Administration" : "Personal banking"}</p>
           <ul>
-            {navigation.map((item, index) => (
-              <li key={item}>
-                <span
-                  aria-current={index === 0 ? "page" : undefined}
-                  className={index === 0 ? styles.active : styles.upcoming}
-                >
-                  <span aria-hidden="true">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  {item}
-                  {index > 0 ? <small>Soon</small> : null}
-                </span>
-              </li>
-            ))}
+            {role === "ADMIN"
+              ? adminNavigation.map((item, index) => (
+                  <li key={item}>
+                    <span
+                      aria-current={index === 0 ? "page" : undefined}
+                      className={index === 0 ? styles.active : styles.upcoming}
+                    >
+                      <span aria-hidden="true">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      {item}
+                      {index > 0 ? <small>Soon</small> : null}
+                    </span>
+                  </li>
+                ))
+              : customerNavigation.map((item, index) => (
+                  <li key={item.href}>
+                    <a
+                      className={index === 0 ? styles.active : undefined}
+                      href={item.href}
+                    >
+                      <span aria-hidden="true">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
           </ul>
         </nav>
 
