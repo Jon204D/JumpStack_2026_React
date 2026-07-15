@@ -40,3 +40,13 @@ export type AdminOverviewResponse = {
   accounts: Account[];
   customers: Customer[];
 };
+
+export type CreateCustomerRequest = {
+  password: string;
+  username: string;
+};
+
+export type AdminCreateCustomerRequest = {
+  admin: LoginRequest;
+  customer: CreateCustomerRequest;
+};

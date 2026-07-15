@@ -2,10 +2,12 @@
 
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
+import { AddCustomerForm } from "@/components/dashboard/AddCustomerForm";
 import { apiClient } from "@/lib/api/client";
 import type {
   AdminOverviewResponse,
   ApiError,
+  Customer,
   LoginRequest,
 } from "@/lib/api/types";
 import styles from "./AdminDashboard.module.scss";
@@ -20,6 +22,8 @@ const currency = new Intl.NumberFormat("en-US", {
 export function AdminDashboard({ password, username }: AdminDashboardProps) {
   const [overview, setOverview] = useState<AdminOverviewResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [isAddingCustomer, setIsAddingCustomer] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -60,6 +64,21 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
     [overview],
   );
 
+  function handleCustomerCreated(customer: Customer) {
+    setOverview((current) =>
+      current
+        ? { ...current, customers: [customer, ...current.customers] }
+        : { accounts: [], customers: [customer] },
+    );
+    setSuccess(`${customer.username} now has secure customer access.`);
+    setIsAddingCustomer(false);
+  }
+
+  function toggleAddCustomer() {
+    setSuccess(null);
+    setIsAddingCustomer((current) => !current);
+  }
+
   return (
     <section aria-labelledby="dashboard-title">
       <div className={styles.heading}>
@@ -68,11 +87,33 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
           <h1 id="dashboard-title">Good to see you, {username}.</h1>
           <span>Here is the current shape of the bank.</span>
         </div>
-        <button className={styles.primaryAction} type="button" disabled>
-          <span aria-hidden="true">+</span> Add customer
-          <small>Next</small>
+        <button
+          aria-expanded={isAddingCustomer}
+          className={styles.primaryAction}
+          onClick={toggleAddCustomer}
+          type="button"
+        >
+          <span aria-hidden="true">{isAddingCustomer ? "×" : "+"}</span>
+          {isAddingCustomer ? "Close form" : "Add customer"}
+          <small>Secure setup</small>
         </button>
       </div>
+
+      {isAddingCustomer ? (
+        <AddCustomerForm
+          adminPassword={password}
+          adminUsername={username}
+          onCancel={() => setIsAddingCustomer(false)}
+          onCreated={handleCustomerCreated}
+        />
+      ) : null}
+
+      {success ? (
+        <div className={styles.success} role="status">
+          <span aria-hidden="true">✓</span>
+          {success}
+        </div>
+      ) : null}
 
       {error ? (
         <div className={styles.error} role="alert">
@@ -153,18 +194,18 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
                 <small>Admin and customer roles verified</small>
               </div>
             </li>
-            <li>
-              <span>2</span>
+            <li className={styles.complete}>
+              <span>✓</span>
               <div>
                 <strong>Add customer workflow</strong>
-                <small>Next design and implementation target</small>
+                <small>Credentials are securely created and linked</small>
               </div>
             </li>
             <li>
               <span>3</span>
               <div>
                 <strong>Open customer accounts</strong>
-                <small>Checking and savings setup</small>
+                <small>Next design and implementation target</small>
               </div>
             </li>
           </ol>
