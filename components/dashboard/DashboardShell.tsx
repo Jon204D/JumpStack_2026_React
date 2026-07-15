@@ -1,0 +1,86 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { ReactNode } from "react";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { Button } from "@/components/ui/Button";
+import type { Role } from "@/lib/api/types";
+import styles from "./DashboardShell.module.scss";
+
+type DashboardShellProps = {
+  children: ReactNode;
+  role: Role;
+  username: string;
+};
+
+const adminNavigation = ["Overview", "Customers", "Accounts"];
+const customerNavigation = ["Overview", "My accounts", "Activity"];
+
+export function DashboardShell({
+  children,
+  role,
+  username,
+}: DashboardShellProps) {
+  const router = useRouter();
+  const { signOut } = useAuth();
+  const navigation = role === "ADMIN" ? adminNavigation : customerNavigation;
+
+  function handleSignOut() {
+    signOut();
+    router.replace("/login");
+  }
+
+  return (
+    <div className={styles.shell}>
+      <aside className={styles.sidebar}>
+        <Link className={styles.brand} href="/" aria-label="Ledger Atlas home">
+          <span aria-hidden="true">LA</span>
+          <strong>Ledger Atlas</strong>
+        </Link>
+
+        <nav aria-label="Dashboard navigation">
+          <p>{role === "ADMIN" ? "Administration" : "Personal banking"}</p>
+          <ul>
+            {navigation.map((item, index) => (
+              <li key={item}>
+                <span
+                  aria-current={index === 0 ? "page" : undefined}
+                  className={index === 0 ? styles.active : styles.upcoming}
+                >
+                  <span aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  {item}
+                  {index > 0 ? <small>Soon</small> : null}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className={styles.sidebarNote}>
+          <span aria-hidden="true">✓</span>
+          <p>
+            <strong>Secure session</strong>
+            Your credentials remain in this tab only.
+          </p>
+        </div>
+      </aside>
+
+      <div className={styles.workspace}>
+        <header className={styles.topbar}>
+          <div>
+            <p>Signed in as</p>
+            <strong>{username}</strong>
+            <span>{role}</span>
+          </div>
+          <Button onClick={handleSignOut} variant="secondary">
+            Sign out
+          </Button>
+        </header>
+        <main className={styles.content}>{children}</main>
+      </div>
+    </div>
+  );
+}

@@ -19,3 +19,24 @@ export type LoginResponse = {
   role: Role;
   username: string;
 };
+
+export type Customer = {
+  id: string;
+  username: string;
+};
+
+export type AccountType = "CHECKING" | "SAVINGS";
+
+export type Account = {
+  accountNumber: string;
+  balance: number;
+  customerId: string;
+  id: string;
+  interestRate: number;
+  type: AccountType;
+};
+
+export type AdminOverviewResponse = {
+  accounts: Account[];
+  customers: Customer[];
+};

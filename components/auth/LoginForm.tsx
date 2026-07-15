@@ -1,15 +1,17 @@
 "use client";
 
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
-import { Button, ButtonLink } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { apiClient } from "@/lib/api/client";
 import type { ApiError, LoginResponse } from "@/lib/api/types";
 import { useAuth } from "./AuthProvider";
 import styles from "./LoginForm.module.scss";
 
 export function LoginForm() {
-  const { session, signIn, signOut } = useAuth();
+  const router = useRouter();
+  const { session, signIn } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,7 +35,7 @@ export function LoginForm() {
         role: result.role,
         username: result.username,
       });
-      event.currentTarget.reset();
+      router.replace("/dashboard");
     } catch (requestError) {
       if (axios.isAxiosError<ApiError>(requestError)) {
         setError(
@@ -54,15 +56,7 @@ export function LoginForm() {
         <span className={styles.successMark} aria-hidden="true">✓</span>
         <p className={styles.kicker}>Identity verified</p>
         <h2>Welcome, {session.username}.</h2>
-        <p>
-          You are signed in with the <strong>{session.role.toLowerCase()}</strong>{" "}
-          role. Your credentials are held only in memory and will be cleared when
-          this browser tab reloads.
-        </p>
-        <div className={styles.actions}>
-          <ButtonLink href="/" variant="secondary">Return home</ButtonLink>
-          <Button onClick={signOut}>Sign out</Button>
-        </div>
+        <p>Opening your secure dashboard…</p>
       </div>
     );
   }
