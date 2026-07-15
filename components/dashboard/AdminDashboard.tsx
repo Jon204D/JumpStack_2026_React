@@ -2,9 +2,11 @@
 
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
+import { AddAccountForm } from "@/components/dashboard/AddAccountForm";
 import { AddCustomerForm } from "@/components/dashboard/AddCustomerForm";
 import { apiClient } from "@/lib/api/client";
 import type {
+  Account,
   AdminOverviewResponse,
   ApiError,
   Customer,
@@ -24,6 +26,9 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isAddingCustomer, setIsAddingCustomer] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -76,7 +81,28 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
 
   function toggleAddCustomer() {
     setSuccess(null);
+    setSelectedCustomer(null);
     setIsAddingCustomer((current) => !current);
+  }
+
+  function handleOpenAccount(customer: Customer) {
+    setSuccess(null);
+    setIsAddingCustomer(false);
+    setSelectedCustomer((current) =>
+      current?.id === customer.id ? null : customer,
+    );
+  }
+
+  function handleAccountCreated(account: Account) {
+    setOverview((current) =>
+      current
+        ? { ...current, accounts: [account, ...current.accounts] }
+        : { accounts: [account], customers: [] },
+    );
+    setSuccess(
+      `${account.accountNumber} is now open for ${selectedCustomer?.username ?? "the customer"}.`,
+    );
+    setSelectedCustomer(null);
   }
 
   return (
@@ -105,6 +131,16 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
           adminUsername={username}
           onCancel={() => setIsAddingCustomer(false)}
           onCreated={handleCustomerCreated}
+        />
+      ) : null}
+
+      {selectedCustomer ? (
+        <AddAccountForm
+          adminPassword={password}
+          adminUsername={username}
+          customer={selectedCustomer}
+          onCancel={() => setSelectedCustomer(null)}
+          onCreated={handleAccountCreated}
         />
       ) : null}
 
@@ -170,7 +206,16 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
                         {accountCount === 1 ? "account" : "accounts"}
                       </span>
                     </div>
-                    <small>Customer</small>
+                    <button
+                      aria-expanded={selectedCustomer?.id === customer.id}
+                      className={styles.accountAction}
+                      onClick={() => handleOpenAccount(customer)}
+                      type="button"
+                    >
+                      {selectedCustomer?.id === customer.id
+                        ? "Close"
+                        : "Open account"}
+                    </button>
                   </li>
                 );
               })}
@@ -201,11 +246,11 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
                 <small>Credentials are securely created and linked</small>
               </div>
             </li>
-            <li>
-              <span>3</span>
+            <li className={styles.complete}>
+              <span>✓</span>
               <div>
                 <strong>Open customer accounts</strong>
-                <small>Next design and implementation target</small>
+                <small>Checking and savings creation is ready</small>
               </div>
             </li>
           </ol>

@@ -172,7 +172,20 @@
 }
 .customerList div { display: grid; gap: 0.18rem; }
 .customerList div span { color: $muted; font-size: 0.72rem; }
-.customerList small { color: $brand; font-size: 0.66rem; font-weight: 750; }
+
+.accountAction {
+  padding: 0.48rem 0.65rem;
+  color: $brand;
+  font-size: 0.7rem;
+  font-weight: 750;
+  background: rgba($brand, 0.08);
+  border: 1px solid rgba($brand, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:hover { color: #fff; background: $brand; }
+  &:focus-visible { outline: 3px solid rgba($brand, 0.22); outline-offset: 2px; }
+}
 
 .avatar {
   display: grid;
@@ -243,4 +256,6 @@
   .heading { align-items: flex-start; flex-direction: column; }
   .metrics { grid-template-columns: 1fr; }
   .balanceMetric { grid-column: auto; }
+  .customerList li { grid-template-columns: auto 1fr; }
+  .accountAction { grid-column: 1 / -1; }
 }

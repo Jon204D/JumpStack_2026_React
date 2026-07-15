@@ -50,3 +50,15 @@ export type AdminCreateCustomerRequest = {
   admin: LoginRequest;
   customer: CreateCustomerRequest;
 };
+
+export type CreateAccountRequest = {
+  accountNumber: string;
+  startingBalance: number;
+  type: AccountType;
+};
+
+export type AdminCreateAccountRequest = {
+  account: CreateAccountRequest;
+  admin: LoginRequest;
+  customerId: string;
+};
