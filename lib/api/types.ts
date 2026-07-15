@@ -41,18 +41,29 @@ export type AdminOverviewResponse = {
   customers: Customer[];
 };
 
-export type CreateCustomerRequest = {
+export type InitialAccountRequest = {
+  startingBalance: number;
+  type: AccountType;
+};
+
+export type OnboardCustomerRequest = {
+  accounts: InitialAccountRequest[];
   password: string;
+  totalStartingBalance: number;
   username: string;
+};
+
+export type CustomerOnboardingResponse = {
+  accounts: Account[];
+  customer: Customer;
 };
 
 export type AdminCreateCustomerRequest = {
   admin: LoginRequest;
-  customer: CreateCustomerRequest;
+  onboarding: OnboardCustomerRequest;
 };
 
 export type CreateAccountRequest = {
-  accountNumber: string;
   startingBalance: number;
   type: AccountType;
 };

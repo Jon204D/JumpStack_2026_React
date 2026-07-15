@@ -10,6 +10,7 @@ import type {
   AdminOverviewResponse,
   ApiError,
   Customer,
+  CustomerOnboardingResponse,
   LoginRequest,
 } from "@/lib/api/types";
 import styles from "./AdminDashboard.module.scss";
@@ -69,13 +70,21 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
     [overview],
   );
 
-  function handleCustomerCreated(customer: Customer) {
+  function handleCustomerCreated(result: CustomerOnboardingResponse) {
     setOverview((current) =>
       current
-        ? { ...current, customers: [customer, ...current.customers] }
-        : { accounts: [], customers: [customer] },
+        ? {
+            accounts: [...result.accounts, ...current.accounts],
+            customers: [result.customer, ...current.customers],
+          }
+        : { accounts: result.accounts, customers: [result.customer] },
     );
-    setSuccess(`${customer.username} now has secure customer access.`);
+    const accountNumbers = result.accounts
+      .map((account) => account.accountNumber)
+      .join(" and ");
+    setSuccess(
+      `${result.customer.username} is onboarded with ${accountNumbers}.`,
+    );
     setIsAddingCustomer(false);
   }
 
@@ -242,8 +251,8 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
             <li className={styles.complete}>
               <span>✓</span>
               <div>
-                <strong>Add customer workflow</strong>
-                <small>Credentials are securely created and linked</small>
+                <strong>Customer onboarding</strong>
+                <small>Credentials and opening accounts are created together</small>
               </div>
             </li>
             <li className={styles.complete}>

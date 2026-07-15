@@ -33,7 +33,6 @@ export async function POST(request: Request) {
   const adminUsername = payload.admin?.username?.trim();
   const adminPassword = payload.admin?.password;
   const customerId = payload.customerId?.trim();
-  const accountNumber = payload.account?.accountNumber?.trim();
 
   if (!adminUsername || !adminPassword) {
     return errorResponse(401, "Administrator authentication is required.");
@@ -41,7 +40,6 @@ export async function POST(request: Request) {
 
   if (
     !customerId ||
-    !accountNumber ||
     !payload.account?.type ||
     payload.account.startingBalance === null ||
     payload.account.startingBalance === undefined
@@ -55,7 +53,6 @@ export async function POST(request: Request) {
         `/api/customers/${encodeURIComponent(customerId)}/accounts`,
       ).toString(),
       {
-        accountNumber,
         startingBalance: payload.account.startingBalance,
         type: payload.account.type,
       },

@@ -43,17 +43,9 @@ export function AddAccountForm({
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const accountNumber = String(formData.get("accountNumber") ?? "").trim();
     const type = String(formData.get("type") ?? "") as AccountType;
     const balanceInput = String(formData.get("startingBalance") ?? "").trim();
     const validationErrors: FieldErrors = {};
-
-    if (!accountNumber) {
-      validationErrors.accountNumber = "Account number is required.";
-    } else if (!/^[A-Za-z0-9-]+$/.test(accountNumber)) {
-      validationErrors.accountNumber =
-        "Use only letters, numbers, and hyphens.";
-    }
 
     if (type !== "CHECKING" && type !== "SAVINGS") {
       validationErrors.type = "Select an account type.";
@@ -75,7 +67,6 @@ export function AddAccountForm({
 
     const request: AdminCreateAccountRequest = {
       account: {
-        accountNumber,
         startingBalance: Number(balanceInput),
         type,
       },
@@ -116,7 +107,8 @@ export function AddAccountForm({
           <p>New customer account</p>
           <h2 id="add-account-title">Open an account for {customer.username}</h2>
           <span>
-            Choose the account type and provide its opening balance.
+            Choose the account type and opening balance. The account number is
+            generated securely for you.
           </span>
         </div>
         <button
@@ -138,36 +130,11 @@ export function AddAccountForm({
 
         <div className={styles.fields}>
           <label>
-            <span>Account number</span>
-            <input
-              aria-describedby={
-                fieldErrors.accountNumber
-                  ? "account-number-error"
-                  : "account-number-help"
-              }
-              aria-invalid={Boolean(fieldErrors.accountNumber)}
-              autoComplete="off"
-              autoFocus
-              name="accountNumber"
-              placeholder="e.g. CHK-10002"
-              type="text"
-            />
-            {fieldErrors.accountNumber ? (
-              <small id="account-number-error">
-                {fieldErrors.accountNumber}
-              </small>
-            ) : (
-              <small className={styles.help} id="account-number-help">
-                Letters, numbers, and hyphens only.
-              </small>
-            )}
-          </label>
-
-          <label>
             <span>Account type</span>
             <select
               aria-describedby={fieldErrors.type ? "type-error" : undefined}
               aria-invalid={Boolean(fieldErrors.type)}
+              autoFocus
               defaultValue="CHECKING"
               name="type"
             >

@@ -3,7 +3,7 @@ import { backendUrl, basicAuthorization } from "@/lib/api/server";
 import type {
   AdminCreateCustomerRequest,
   ApiError,
-  Customer,
+  CustomerOnboardingResponse,
 } from "@/lib/api/types";
 
 const jsonHeaders = {
@@ -32,23 +32,32 @@ export async function POST(request: Request) {
 
   const adminUsername = payload.admin?.username?.trim();
   const adminPassword = payload.admin?.password;
-  const customerUsername = payload.customer?.username?.trim();
-  const customerPassword = payload.customer?.password;
+  const onboarding = payload.onboarding;
+  const customerUsername = onboarding?.username?.trim();
+  const customerPassword = onboarding?.password;
 
   if (!adminUsername || !adminPassword) {
     return errorResponse(401, "Administrator authentication is required.");
   }
 
-  if (!customerUsername || !customerPassword) {
-    return errorResponse(400, "A customer username and password are required.");
+  if (
+    !customerUsername ||
+    !customerPassword ||
+    onboarding.totalStartingBalance === null ||
+    onboarding.totalStartingBalance === undefined ||
+    !onboarding.accounts?.length
+  ) {
+    return errorResponse(400, "Complete customer onboarding details are required.");
   }
 
   try {
-    const backendResponse = await axios.post<Customer | ApiError>(
+    const backendResponse = await axios.post<CustomerOnboardingResponse | ApiError>(
       backendUrl("/api/customers").toString(),
       {
         password: customerPassword,
+        totalStartingBalance: onboarding.totalStartingBalance,
         username: customerUsername,
+        accounts: onboarding.accounts,
       },
       {
         headers: {
@@ -79,7 +88,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return Response.json(backendResponse.data as Customer, {
+    return Response.json(backendResponse.data as CustomerOnboardingResponse, {
       headers: jsonHeaders,
       status: 201,
     });
