@@ -10,6 +10,7 @@ import {
 import type { Role } from "@/lib/api/types";
 
 type AuthSession = {
+  customerId: string | null;
   password: string;
   role: Role;
   username: string;

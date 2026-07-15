@@ -1,5 +1,6 @@
+import axios from "axios";
 import { backendUrl, basicAuthorization } from "@/lib/api/server";
-import type { ApiError, LoginRequest, LoginResponse, Role } from "@/lib/api/types";
+import type { ApiError, LoginRequest, LoginResponse } from "@/lib/api/types";
 
 const jsonHeaders = {
   "Cache-Control": "no-store",
@@ -33,34 +34,42 @@ export async function POST(request: Request) {
   }
 
   try {
-    const backendResponse = await fetch(backendUrl("/api/customers"), {
-      cache: "no-store",
-      headers: {
-        Accept: "application/json",
-        Authorization: basicAuthorization(username, password),
+    const backendResponse = await axios.get<LoginResponse | ApiError>(
+      backendUrl("/api/auth/me").toString(),
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: basicAuthorization(username, password),
+        },
+        timeout: 10_000,
+        validateStatus: () => true,
       },
-    });
+    );
 
     if (backendResponse.status === 401) {
       return errorResponse(401, "The username or password is incorrect.");
     }
 
-    let role: Role;
+    if (backendResponse.status < 200 || backendResponse.status >= 300) {
+      let message = "The banking service could not verify the account right now.";
 
-    if (backendResponse.ok) {
-      role = "ADMIN";
-    } else if (backendResponse.status === 403) {
-      // This endpoint is admin-only. A successfully authenticated customer is
-      // therefore expected to receive 403, while invalid credentials receive 401.
-      role = "CUSTOMER";
-    } else {
-      return errorResponse(
-        502,
-        "The banking service could not verify the account right now.",
-      );
+      if (
+        backendResponse.data &&
+        typeof backendResponse.data === "object" &&
+        "message" in backendResponse.data
+      ) {
+        message = backendResponse.data.message || message;
+      }
+
+      return errorResponse(backendResponse.status, message);
     }
 
-    const response: LoginResponse = { role, username };
+    const identity = backendResponse.data as LoginResponse;
+    const response: LoginResponse = {
+      customerId: identity.customerId,
+      role: identity.role,
+      username: identity.username,
+    };
     return Response.json(response, { headers: jsonHeaders });
   } catch {
     return errorResponse(

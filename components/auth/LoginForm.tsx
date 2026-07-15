@@ -1,7 +1,9 @@
 "use client";
 
+import axios from "axios";
 import { type FormEvent, useState } from "react";
 import { Button, ButtonLink } from "@/components/ui/Button";
+import { apiClient } from "@/lib/api/client";
 import type { ApiError, LoginResponse } from "@/lib/api/types";
 import { useAuth } from "./AuthProvider";
 import styles from "./LoginForm.module.scss";
@@ -21,23 +23,26 @@ export function LoginForm() {
     const password = String(formData.get("password") ?? "");
 
     try {
-      const response = await fetch("/api/auth/login", {
-        body: JSON.stringify({ password, username }),
-        headers: { "Content-Type": "application/json" },
-        method: "POST",
+      const { data: result } = await apiClient.post<LoginResponse>(
+        "/auth/login",
+        { password, username },
+      );
+      signIn({
+        customerId: result.customerId,
+        password,
+        role: result.role,
+        username: result.username,
       });
-
-      if (!response.ok) {
-        const apiError = (await response.json()) as ApiError;
-        setError(apiError.message || "Sign in failed. Please try again.");
-        return;
-      }
-
-      const result = (await response.json()) as LoginResponse;
-      signIn({ password, role: result.role, username: result.username });
       event.currentTarget.reset();
-    } catch {
-      setError("The sign-in service is unavailable. Please try again.");
+    } catch (requestError) {
+      if (axios.isAxiosError<ApiError>(requestError)) {
+        setError(
+          requestError.response?.data.message ??
+            "The sign-in service is unavailable. Please try again.",
+        );
+      } else {
+        setError("The sign-in service is unavailable. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }

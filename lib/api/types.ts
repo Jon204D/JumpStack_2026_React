@@ -15,6 +15,7 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = {
+  customerId: string | null;
   role: Role;
   username: string;
 };
