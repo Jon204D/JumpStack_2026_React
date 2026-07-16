@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { EditCustomerForm } from "@/components/dashboard/EditCustomerForm";
 import { apiClient } from "@/lib/api/client";
 import type {
   Account,
@@ -17,6 +18,7 @@ import type {
 import styles from "./AdminManagement.module.scss";
 
 type AdminManagementProps = LoginRequest & {
+  onCustomerUpdated: (customer: Customer, message: string) => void;
   onDeleted: (target: AdminDeleteTarget, message: string) => void;
   onOpenAccount: (customer: Customer) => void;
   overview: AdminOverviewResponse;
@@ -33,6 +35,7 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 export function AdminManagement({
+  onCustomerUpdated,
   onDeleted,
   onOpenAccount,
   overview,
@@ -40,6 +43,7 @@ export function AdminManagement({
   username,
 }: AdminManagementProps) {
   const [error, setError] = useState<string | null>(null);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [pendingDeletion, setPendingDeletion] =
     useState<PendingDeletion | null>(null);
@@ -250,6 +254,16 @@ export function AdminManagement({
                             : "Details"}
                         </button>
                         <button
+                          onClick={() => {
+                            setEditingCustomer(customer);
+                            setSelectedCustomerId(null);
+                            setPendingDeletion(null);
+                          }}
+                          type="button"
+                        >
+                          Edit access
+                        </button>
+                        <button
                           onClick={() => onOpenAccount(customer)}
                           type="button"
                         >
@@ -325,6 +339,19 @@ export function AdminManagement({
           </div>
         ) : null}
       </div>
+
+      {editingCustomer ? (
+        <EditCustomerForm
+          customer={editingCustomer}
+          onCancel={() => setEditingCustomer(null)}
+          onUpdated={(customer, message) => {
+            setEditingCustomer(null);
+            onCustomerUpdated(customer, message);
+          }}
+          password={password}
+          username={username}
+        />
+      ) : null}
 
       {selectedCustomer ? (
         <aside

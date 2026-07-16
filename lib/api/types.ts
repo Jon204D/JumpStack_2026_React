@@ -64,6 +64,17 @@ export type AdminCreateCustomerRequest = {
   onboarding: OnboardCustomerRequest;
 };
 
+export type UpdateCustomerRequest = {
+  password?: string;
+  username?: string;
+};
+
+export type AdminUpdateCustomerRequest = {
+  admin: LoginRequest;
+  customerId: string;
+  update: UpdateCustomerRequest;
+};
+
 export type CreateAccountRequest = {
   startingBalance: number;
   type: AccountType;

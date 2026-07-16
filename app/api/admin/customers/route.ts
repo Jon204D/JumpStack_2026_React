@@ -2,7 +2,9 @@ import axios from "axios";
 import { backendUrl, basicAuthorization } from "@/lib/api/server";
 import type {
   AdminCreateCustomerRequest,
+  AdminUpdateCustomerRequest,
   ApiError,
+  Customer,
   CustomerOnboardingResponse,
 } from "@/lib/api/types";
 
@@ -11,14 +13,88 @@ const jsonHeaders = {
   "Content-Type": "application/json",
 };
 
-function errorResponse(status: number, message: string) {
+function errorResponse(
+  status: number,
+  message: string,
+  error = "Customer Management Error",
+) {
   const body: ApiError = {
-    error: status === 401 ? "Unauthorized" : "Customer Creation Error",
+    error: status === 401 ? "Unauthorized" : error,
     message,
     status,
   };
 
   return Response.json(body, { headers: jsonHeaders, status });
+}
+
+export async function PATCH(request: Request) {
+  let payload: AdminUpdateCustomerRequest;
+
+  try {
+    payload = (await request.json()) as AdminUpdateCustomerRequest;
+  } catch {
+    return errorResponse(400, "Customer updates are required.");
+  }
+
+  const adminUsername = payload.admin?.username?.trim();
+  const adminPassword = payload.admin?.password;
+  const customerId = payload.customerId?.trim();
+  const update = payload.update;
+
+  if (!adminUsername || !adminPassword) {
+    return errorResponse(401, "Administrator authentication is required.");
+  }
+
+  if (!customerId || !update || (!update.username && !update.password)) {
+    return errorResponse(
+      400,
+      "Provide a customer and at least one access change.",
+    );
+  }
+
+  try {
+    const backendResponse = await axios.patch<Customer | ApiError>(
+      backendUrl(`/api/customers/${encodeURIComponent(customerId)}`).toString(),
+      update,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: basicAuthorization(adminUsername, adminPassword),
+          "Content-Type": "application/json",
+        },
+        timeout: 10_000,
+        validateStatus: () => true,
+      },
+    );
+
+    if (backendResponse.status < 200 || backendResponse.status >= 300) {
+      if (
+        backendResponse.data &&
+        typeof backendResponse.data === "object" &&
+        "message" in backendResponse.data
+      ) {
+        return Response.json(backendResponse.data, {
+          headers: jsonHeaders,
+          status: backendResponse.status,
+        });
+      }
+
+      return errorResponse(
+        backendResponse.status,
+        "The customer access details could not be updated.",
+      );
+    }
+
+    return Response.json(backendResponse.data as Customer, {
+      headers: jsonHeaders,
+      status: 200,
+    });
+  } catch {
+    return errorResponse(
+      503,
+      "The banking service is unavailable. Confirm the backend is running and try again.",
+    );
+  }
 }
 
 export async function POST(request: Request) {

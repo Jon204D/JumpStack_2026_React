@@ -154,6 +154,25 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
     setSuccess(message);
   }
 
+  function handleCustomerUpdated(customer: Customer, message: string) {
+    setOverview((current) =>
+      current
+        ? {
+            ...current,
+            customers: current.customers.map((existingCustomer) =>
+              existingCustomer.id === customer.id
+                ? customer
+                : existingCustomer,
+            ),
+          }
+        : current,
+    );
+    if (selectedCustomer?.id === customer.id) {
+      setSelectedCustomer(customer);
+    }
+    setSuccess(message);
+  }
+
   return (
     <section aria-labelledby="dashboard-title">
       <div className={styles.heading} id="overview">
@@ -309,6 +328,7 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
       {overview ? (
         <>
           <AdminManagement
+            onCustomerUpdated={handleCustomerUpdated}
             onDeleted={handleDeleted}
             onOpenAccount={handleOpenAccount}
             overview={overview}
