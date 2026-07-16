@@ -19,6 +19,7 @@ const adminNavigation = [
   { href: "#customers", label: "Customers" },
   { href: "#accounts", label: "Accounts" },
   { href: "#activity", label: "Activity" },
+  { href: "#administrators", label: "Administrators" },
 ];
 const customerNavigation = [
   { href: "#overview", label: "Overview" },

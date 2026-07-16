@@ -28,6 +28,17 @@ export type AuthenticatedSession = {
   username: string;
 };
 
+export type CreateAdminRequest = {
+  password: string;
+  username: string;
+};
+
+export type AdminResponse = {
+  id: string;
+  role: "ADMIN";
+  username: string;
+};
+
 export type Customer = {
   id: string;
   username: string;

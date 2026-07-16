@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AddAccountForm } from "@/components/dashboard/AddAccountForm";
 import { AddCustomerForm } from "@/components/dashboard/AddCustomerForm";
 import { AdminManagement } from "@/components/dashboard/AdminManagement";
+import { CreateAdminForm } from "@/components/dashboard/CreateAdminForm";
 import { TransactionHistory } from "@/components/dashboard/TransactionHistory";
 import { apiClient, bearerHeaders } from "@/lib/api/client";
 import type {
@@ -346,6 +347,7 @@ export function AdminDashboard({ accessToken, username }: AdminDashboardProps) {
             title="Bank-wide transaction history"
             transactions={overview.transactions}
           />
+          <CreateAdminForm accessToken={accessToken} />
         </>
       ) : null}
     </section>
