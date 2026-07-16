@@ -117,3 +117,16 @@ export type MoneyMovementResponse = {
   account?: Account;
   message: string;
 };
+
+export type AdminDeleteTarget =
+  | { accountNumber: string; kind: "ACCOUNT" }
+  | { customerId: string; kind: "CUSTOMER" };
+
+export type AdminDeleteRequest = {
+  admin: LoginRequest;
+  target: AdminDeleteTarget;
+};
+
+export type AdminDeleteResponse = {
+  message: string;
+};

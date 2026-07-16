@@ -1,0 +1,130 @@
+@use "../../styles/tokens" as *;
+@use "../../styles/mixins" as *;
+
+.management {
+  padding: 1.4rem;
+  margin-top: 1rem;
+  scroll-margin-top: 1rem;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.heading {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  p { margin: 0 0 0.3rem; color: $brand; font-size: 0.66rem; font-weight: 800; letter-spacing: 0.11em; text-transform: uppercase; }
+  h2 { margin: 0; font-size: 1.35rem; letter-spacing: -0.035em; }
+  > div > span { display: block; margin-top: 0.4rem; color: $muted; font-size: 0.75rem; }
+}
+
+.search input {
+  width: min(320px, 42vw);
+  min-height: 44px;
+  padding: 0.7rem 0.85rem;
+  color: $ink;
+  background: $canvas;
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  outline: none;
+
+  &:focus { border-color: $brand; box-shadow: 0 0 0 3px rgba($brand, 0.1); }
+}
+
+.tabs {
+  display: flex;
+  margin-top: 1.25rem;
+  gap: 0.45rem;
+  border-bottom: 1px solid $border;
+
+  button { padding: 0.75rem 0.9rem; color: $muted; font-weight: 750; background: transparent; border: 0; border-bottom: 2px solid transparent; cursor: pointer; }
+  button span { padding: 0.15rem 0.38rem; margin-left: 0.3rem; font-size: 0.65rem; background: $canvas; border-radius: 999px; }
+  .activeTab { color: $brand; border-bottom-color: $brand; }
+}
+
+.error { padding: 0.8rem 0.9rem; margin-top: 1rem; color: $danger; background: #fce8e8; border: 1px solid #edc1c1; border-radius: $radius-sm; }
+.tableWrap { overflow-x: auto; }
+
+.tableWrap table { width: 100%; border-collapse: collapse; }
+.tableWrap th { padding: 0.85rem 0.7rem; color: $muted; font-size: 0.65rem; letter-spacing: 0.07em; text-align: left; text-transform: uppercase; }
+.tableWrap td { padding: 0.85rem 0.7rem; color: $ink; font-size: 0.78rem; border-top: 1px solid rgba($border, 0.75); }
+.tableWrap td:first-child { display: flex; gap: 0.65rem; align-items: center; }
+
+.avatar { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; color: $brand; font-size: 0.65rem; font-weight: 850; background: rgba($brand, 0.1); border-radius: 50%; }
+.primaryCell { display: grid; gap: 0.12rem; }
+.primaryCell small { color: $muted; font-family: var(--font-geist-mono); font-size: 0.62rem; }
+.typeBadge { padding: 0.2rem 0.42rem; color: $brand; font-size: 0.62rem; font-weight: 800; background: rgba($brand, 0.09); border-radius: 999px; }
+
+.rowActions { display: flex; gap: 0.4rem; justify-content: flex-end; }
+.rowActions button { padding: 0.4rem 0.52rem; color: $brand; font-size: 0.66rem; font-weight: 750; background: rgba($brand, 0.06); border: 1px solid rgba($brand, 0.18); border-radius: 7px; cursor: pointer; white-space: nowrap; }
+.rowActions button:hover { color: #fff; background: $brand; }
+.rowActions .dangerAction { color: $danger; background: transparent; border-color: rgba($danger, 0.24); }
+.rowActions .dangerAction:hover { color: #fff; background: $danger; }
+
+.emptyState { display: grid; min-height: 150px; place-content: center; gap: 0.3rem; color: $muted; text-align: center; }
+.emptyState strong { color: $ink; }
+.emptyState span { font-size: 0.72rem; }
+
+.customerDetails {
+  display: grid;
+  padding: 1rem;
+  margin-top: 1rem;
+  grid-template-columns: minmax(180px, 0.55fr) 1fr;
+  gap: 1rem;
+  color: #fff;
+  background: $ink;
+  border-radius: $radius-md;
+
+  p { margin: 0 0 0.25rem; color: #86bcb6; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  h3 { margin: 0; }
+  > div > span { display: block; margin-top: 0.3rem; color: #aabcc2; font-size: 0.7rem; }
+  ul { display: grid; padding: 0; margin: 0; gap: 0.45rem; list-style: none; }
+  li { display: grid; padding: 0.6rem 0.7rem; grid-template-columns: 1fr 1fr auto; gap: 0.6rem; color: #dbe7e9; font-size: 0.68rem; background: rgba(#fff, 0.06); border-radius: 8px; }
+}
+
+.confirmation {
+  padding: 1.1rem;
+  margin-top: 1rem;
+  background: #fff7f7;
+  border: 1px solid #e7baba;
+  border-radius: $radius-md;
+
+  > div:first-child { display: flex; gap: 0.8rem; align-items: flex-start; }
+  p { margin: 0 0 0.25rem; color: $danger; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  h3 { margin: 0; }
+  h3 + span { display: block; max-width: 720px; margin-top: 0.4rem; color: $muted; font-size: 0.75rem; line-height: 1.5; }
+}
+
+.warning { display: grid; width: 32px; height: 32px; flex: 0 0 auto; place-items: center; color: #fff; font-weight: 900; background: $danger; border-radius: 50%; }
+.confirmActions { display: flex; margin-top: 1rem; gap: 0.6rem; justify-content: flex-end; }
+.confirmDelete { padding: 0.7rem 0.9rem; color: #fff; font-weight: 750; background: $danger; border: 0; border-radius: $radius-sm; cursor: pointer; }
+.confirmDelete:disabled { cursor: wait; opacity: 0.65; }
+
+@include tablet {
+  .heading { align-items: stretch; flex-direction: column; }
+  .search input { width: 100%; }
+  .customerDetails { grid-template-columns: 1fr; }
+}
+
+@include mobile {
+  .management { padding: 1rem; }
+  .rowActions { align-items: stretch; flex-direction: column; }
+  .customerDetails li { grid-template-columns: 1fr; }
+  .confirmActions { align-items: stretch; flex-direction: column-reverse; }
+}

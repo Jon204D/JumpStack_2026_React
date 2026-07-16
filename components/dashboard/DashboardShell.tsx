@@ -14,7 +14,11 @@ type DashboardShellProps = {
   username: string;
 };
 
-const adminNavigation = ["Overview", "Customers", "Accounts"];
+const adminNavigation = [
+  { href: "#overview", label: "Overview" },
+  { href: "#customers", label: "Customers" },
+  { href: "#accounts", label: "Accounts" },
+];
 const customerNavigation = [
   { href: "#overview", label: "Overview" },
   { href: "#accounts", label: "My accounts" },
@@ -45,34 +49,21 @@ export function DashboardShell({
         <nav aria-label="Dashboard navigation">
           <p>{role === "ADMIN" ? "Administration" : "Personal banking"}</p>
           <ul>
-            {role === "ADMIN"
-              ? adminNavigation.map((item, index) => (
-                  <li key={item}>
-                    <span
-                      aria-current={index === 0 ? "page" : undefined}
-                      className={index === 0 ? styles.active : styles.upcoming}
-                    >
-                      <span aria-hidden="true">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      {item}
-                      {index > 0 ? <small>Soon</small> : null}
+            {(role === "ADMIN" ? adminNavigation : customerNavigation).map(
+              (item, index) => (
+                <li key={item.href}>
+                  <a
+                    className={index === 0 ? styles.active : undefined}
+                    href={item.href}
+                  >
+                    <span aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
                     </span>
-                  </li>
-                ))
-              : customerNavigation.map((item, index) => (
-                  <li key={item.href}>
-                    <a
-                      className={index === 0 ? styles.active : undefined}
-                      href={item.href}
-                    >
-                      <span aria-hidden="true">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
+                    {item.label}
+                  </a>
+                </li>
+              ),
+            )}
           </ul>
         </nav>
 

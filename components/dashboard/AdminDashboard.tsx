@@ -4,9 +4,11 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { AddAccountForm } from "@/components/dashboard/AddAccountForm";
 import { AddCustomerForm } from "@/components/dashboard/AddCustomerForm";
+import { AdminManagement } from "@/components/dashboard/AdminManagement";
 import { apiClient } from "@/lib/api/client";
 import type {
   Account,
+  AdminDeleteTarget,
   AdminOverviewResponse,
   ApiError,
   Customer,
@@ -114,9 +116,40 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
     setSelectedCustomer(null);
   }
 
+  function handleDeleted(target: AdminDeleteTarget, message: string) {
+    setOverview((current) => {
+      if (!current) return current;
+
+      if (target.kind === "CUSTOMER") {
+        return {
+          accounts: current.accounts.filter(
+            (account) => account.customerId !== target.customerId,
+          ),
+          customers: current.customers.filter(
+            (customer) => customer.id !== target.customerId,
+          ),
+        };
+      }
+
+      return {
+        ...current,
+        accounts: current.accounts.filter(
+          (account) =>
+            account.accountNumber.toLowerCase() !==
+            target.accountNumber.toLowerCase(),
+        ),
+      };
+    });
+
+    if (target.kind === "CUSTOMER" && selectedCustomer?.id === target.customerId) {
+      setSelectedCustomer(null);
+    }
+    setSuccess(message);
+  }
+
   return (
     <section aria-labelledby="dashboard-title">
-      <div className={styles.heading}>
+      <div className={styles.heading} id="overview">
         <div>
           <p>Administration overview</p>
           <h1 id="dashboard-title">Good to see you, {username}.</h1>
@@ -265,6 +298,16 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
           </ol>
         </aside>
       </div>
+
+      {overview ? (
+        <AdminManagement
+          onDeleted={handleDeleted}
+          onOpenAccount={handleOpenAccount}
+          overview={overview}
+          password={password}
+          username={username}
+        />
+      ) : null}
     </section>
   );
 }
