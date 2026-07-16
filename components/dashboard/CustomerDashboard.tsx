@@ -4,16 +4,16 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MoneyMovementForm } from "@/components/dashboard/MoneyMovementForm";
 import { TransactionHistory } from "@/components/dashboard/TransactionHistory";
-import { apiClient } from "@/lib/api/client";
+import { apiClient, bearerHeaders } from "@/lib/api/client";
 import type {
   ApiError,
   CustomerOverviewRequest,
   CustomerOverviewResponse,
-  LoginRequest,
+  AuthenticatedSession,
 } from "@/lib/api/types";
 import styles from "./CustomerDashboard.module.scss";
 
-type CustomerDashboardProps = LoginRequest & {
+type CustomerDashboardProps = AuthenticatedSession & {
   customerId: string;
 };
 
@@ -24,7 +24,7 @@ const currency = new Intl.NumberFormat("en-US", {
 
 export function CustomerDashboard({
   customerId,
-  password,
+  accessToken,
   username,
 }: CustomerDashboardProps) {
   const [error, setError] = useState<string | null>(null);
@@ -37,16 +37,16 @@ export function CustomerDashboard({
 
   const fetchOverview = useCallback(async () => {
     const request: CustomerOverviewRequest = {
-      credentials: { password, username },
       customerId,
     };
     const { data } = await apiClient.post<CustomerOverviewResponse>(
       "/customer/overview",
       request,
+      { headers: bearerHeaders(accessToken) },
     );
     return data;
   },
-    [customerId, password, username],
+    [accessToken, customerId],
   );
 
   useEffect(() => {
@@ -180,8 +180,8 @@ export function CustomerDashboard({
         <div className={styles.workspaceGrid}>
           <MoneyMovementForm
             accounts={overview.accounts}
+            accessToken={accessToken}
             onCompleted={handleMovementCompleted}
-            password={password}
             username={username}
           />
 

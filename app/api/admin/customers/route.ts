@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendUrl, basicAuthorization } from "@/lib/api/server";
+import { backendUrl, requestBearerAuthorization } from "@/lib/api/server";
 import type {
   AdminCreateCustomerRequest,
   AdminUpdateCustomerRequest,
@@ -36,14 +36,11 @@ export async function PATCH(request: Request) {
     return errorResponse(400, "Customer updates are required.");
   }
 
-  const adminUsername = payload.admin?.username?.trim();
-  const adminPassword = payload.admin?.password;
+  const authorization = requestBearerAuthorization(request);
   const customerId = payload.customerId?.trim();
   const update = payload.update;
 
-  if (!adminUsername || !adminPassword) {
-    return errorResponse(401, "Administrator authentication is required.");
-  }
+  if (!authorization) return errorResponse(401, "A Bearer token is required.");
 
   if (!customerId || !update || (!update.username && !update.password)) {
     return errorResponse(
@@ -59,7 +56,7 @@ export async function PATCH(request: Request) {
       {
         headers: {
           Accept: "application/json",
-          Authorization: basicAuthorization(adminUsername, adminPassword),
+          Authorization: authorization,
           "Content-Type": "application/json",
         },
         timeout: 10_000,
@@ -106,15 +103,12 @@ export async function POST(request: Request) {
     return errorResponse(400, "Customer details are required.");
   }
 
-  const adminUsername = payload.admin?.username?.trim();
-  const adminPassword = payload.admin?.password;
+  const authorization = requestBearerAuthorization(request);
   const onboarding = payload.onboarding;
   const customerUsername = onboarding?.username?.trim();
   const customerPassword = onboarding?.password;
 
-  if (!adminUsername || !adminPassword) {
-    return errorResponse(401, "Administrator authentication is required.");
-  }
+  if (!authorization) return errorResponse(401, "A Bearer token is required.");
 
   if (
     !customerUsername ||
@@ -138,7 +132,7 @@ export async function POST(request: Request) {
       {
         headers: {
           Accept: "application/json",
-          Authorization: basicAuthorization(adminUsername, adminPassword),
+          Authorization: authorization,
           "Content-Type": "application/json",
         },
         timeout: 10_000,

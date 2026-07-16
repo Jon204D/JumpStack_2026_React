@@ -1,12 +1,11 @@
 import axios from "axios";
-import { backendUrl, basicAuthorization } from "@/lib/api/server";
+import { backendUrl, requestBearerAuthorization } from "@/lib/api/server";
 import type {
   Account,
   AdminOverviewResponse,
   ApiError,
   BankTransaction,
   Customer,
-  LoginRequest,
 } from "@/lib/api/types";
 
 const jsonHeaders = {
@@ -25,25 +24,13 @@ function errorResponse(status: number, message: string) {
 }
 
 export async function POST(request: Request) {
-  let credentials: LoginRequest;
-
-  try {
-    credentials = (await request.json()) as LoginRequest;
-  } catch {
-    return errorResponse(400, "A username and password are required.");
-  }
-
-  const username = credentials.username?.trim();
-  const password = credentials.password;
-
-  if (!username || !password) {
-    return errorResponse(400, "A username and password are required.");
-  }
+  const authorization = requestBearerAuthorization(request);
+  if (!authorization) return errorResponse(401, "A Bearer token is required.");
 
   const requestConfig = {
     headers: {
       Accept: "application/json",
-      Authorization: basicAuthorization(username, password),
+      Authorization: authorization,
     },
     timeout: 10_000,
     validateStatus: () => true,

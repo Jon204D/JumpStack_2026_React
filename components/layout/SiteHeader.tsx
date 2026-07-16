@@ -10,8 +10,9 @@ export function SiteHeader() {
         <span>Ledger Atlas</span>
       </Link>
       <nav className={styles.navigation} aria-label="Primary navigation">
-        <Link href="#capabilities">Capabilities</Link>
-        <Link href="#security">Security</Link>
+        <Link href="/#capabilities">Capabilities</Link>
+        <Link href="/about">About</Link>
+        <Link href="/contact">Contact</Link>
       </nav>
       <ButtonLink href="/login" variant="secondary">Sign in</ButtonLink>
     </header>

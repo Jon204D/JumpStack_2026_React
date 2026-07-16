@@ -3,18 +3,18 @@
 import axios from "axios";
 import { type FormEvent, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { apiClient } from "@/lib/api/client";
+import { apiClient, bearerHeaders } from "@/lib/api/client";
 import type {
   Account,
   ApiError,
   CustomerMoneyMovementRequest,
-  LoginRequest,
+  AuthenticatedSession,
   MoneyMovementResponse,
   TransactionType,
 } from "@/lib/api/types";
 import styles from "./MoneyMovementForm.module.scss";
 
-type MoneyMovementFormProps = LoginRequest & {
+type MoneyMovementFormProps = AuthenticatedSession & {
   accounts: Account[];
   onCompleted: (message: string) => Promise<void>;
 };
@@ -25,9 +25,8 @@ const amountPattern = /^\d{1,15}(\.\d{1,2})?$/;
 
 export function MoneyMovementForm({
   accounts,
+  accessToken,
   onCompleted,
-  password,
-  username,
 }: MoneyMovementFormProps) {
   const [accountNumber, setAccountNumber] = useState(
     accounts[0]?.accountNumber ?? "",
@@ -93,9 +92,9 @@ export function MoneyMovementForm({
       const { data } = await apiClient.post<MoneyMovementResponse>(
         "/customer/money-movement",
         {
-          credentials: { password, username },
           operation,
         } satisfies CustomerMoneyMovementRequest,
+        { headers: bearerHeaders(accessToken) },
       );
       setAmount("");
       setDestinationAccountNumber("");

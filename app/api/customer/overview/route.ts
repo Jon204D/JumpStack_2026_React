@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendUrl, basicAuthorization } from "@/lib/api/server";
+import { backendUrl, requestBearerAuthorization } from "@/lib/api/server";
 import type {
   Account,
   ApiError,
@@ -38,18 +38,17 @@ export async function POST(request: Request) {
     return errorResponse(400, "Customer session details are required.");
   }
 
-  const username = payload.credentials?.username?.trim();
-  const password = payload.credentials?.password;
+  const authorization = requestBearerAuthorization(request);
   const customerId = payload.customerId?.trim();
 
-  if (!username || !password || !customerId) {
+  if (!authorization || !customerId) {
     return errorResponse(400, "Customer session details are required.");
   }
 
   const requestConfig = {
     headers: {
       Accept: "application/json",
-      Authorization: basicAuthorization(username, password),
+      Authorization: authorization,
     },
     timeout: 10_000,
     validateStatus: () => true,

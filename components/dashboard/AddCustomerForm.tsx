@@ -3,7 +3,7 @@
 import axios from "axios";
 import { type FormEvent, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { apiClient } from "@/lib/api/client";
+import { apiClient, bearerHeaders } from "@/lib/api/client";
 import type {
   AccountType,
   AdminCreateCustomerRequest,
@@ -14,8 +14,7 @@ import type {
 import styles from "./AddCustomerForm.module.scss";
 
 type AddCustomerFormProps = {
-  adminPassword: string;
-  adminUsername: string;
+  accessToken: string;
   onCancel: () => void;
   onCreated: (result: CustomerOnboardingResponse) => void;
 };
@@ -37,8 +36,7 @@ function toCents(value: string) {
 }
 
 export function AddCustomerForm({
-  adminPassword,
-  adminUsername,
+  accessToken,
   onCancel,
   onCreated,
 }: AddCustomerFormProps) {
@@ -139,7 +137,6 @@ export function AddCustomerForm({
     setIsSubmitting(true);
 
     const request: AdminCreateCustomerRequest = {
-      admin: { password: adminPassword, username: adminUsername },
       onboarding: {
         accounts,
         password,
@@ -152,6 +149,7 @@ export function AddCustomerForm({
       const { data } = await apiClient.post<CustomerOnboardingResponse>(
         "/admin/customers",
         request,
+        { headers: bearerHeaders(accessToken) },
       );
       form.reset();
       onCreated(data);

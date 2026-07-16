@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { EditCustomerForm } from "@/components/dashboard/EditCustomerForm";
-import { apiClient } from "@/lib/api/client";
+import { apiClient, bearerHeaders } from "@/lib/api/client";
 import type {
   Account,
   AdminDeleteRequest,
@@ -13,11 +13,11 @@ import type {
   AdminOverviewResponse,
   ApiError,
   Customer,
-  LoginRequest,
+  AuthenticatedSession,
 } from "@/lib/api/types";
 import styles from "./AdminManagement.module.scss";
 
-type AdminManagementProps = LoginRequest & {
+type AdminManagementProps = AuthenticatedSession & {
   onCustomerUpdated: (customer: Customer, message: string) => void;
   onDeleted: (target: AdminDeleteTarget, message: string) => void;
   onOpenAccount: (customer: Customer) => void;
@@ -39,7 +39,7 @@ export function AdminManagement({
   onDeleted,
   onOpenAccount,
   overview,
-  password,
+  accessToken,
   username,
 }: AdminManagementProps) {
   const [error, setError] = useState<string | null>(null);
@@ -121,14 +121,16 @@ export function AdminManagement({
             kind: "ACCOUNT",
           };
     const request: AdminDeleteRequest = {
-      admin: { password, username },
       target,
     };
 
     try {
       const { data } = await apiClient.delete<AdminDeleteResponse>(
         "/admin/resources",
-        { data: request },
+        {
+          data: request,
+          headers: bearerHeaders(accessToken),
+        },
       );
       if (
         target.kind === "CUSTOMER" &&
@@ -343,12 +345,12 @@ export function AdminManagement({
       {editingCustomer ? (
         <EditCustomerForm
           customer={editingCustomer}
+          accessToken={accessToken}
           onCancel={() => setEditingCustomer(null)}
           onUpdated={(customer, message) => {
             setEditingCustomer(null);
             onCustomerUpdated(customer, message);
           }}
-          password={password}
           username={username}
         />
       ) : null}

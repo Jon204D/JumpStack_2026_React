@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendUrl, basicAuthorization } from "@/lib/api/server";
+import { backendUrl, requestBearerAuthorization } from "@/lib/api/server";
 import type {
   AdminDeleteRequest,
   AdminDeleteResponse,
@@ -30,13 +30,11 @@ export async function DELETE(request: Request) {
     return errorResponse(400, "Deletion details are required.");
   }
 
-  const username = payload.admin?.username?.trim();
-  const password = payload.admin?.password;
+  const authorization = requestBearerAuthorization(request);
   const target = payload.target;
 
-  if (!username || !password || !target) {
-    return errorResponse(400, "Administrator and deletion details are required.");
-  }
+  if (!authorization) return errorResponse(401, "A Bearer token is required.");
+  if (!target) return errorResponse(400, "Deletion details are required.");
 
   let path: string;
   let successMessage: string;
@@ -57,7 +55,7 @@ export async function DELETE(request: Request) {
       {
         headers: {
           Accept: "application/json",
-          Authorization: basicAuthorization(username, password),
+          Authorization: authorization,
         },
         timeout: 10_000,
         validateStatus: () => true,

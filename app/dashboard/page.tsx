@@ -24,14 +24,14 @@ export default function DashboardPage() {
     <DashboardShell role={session.role} username={session.username}>
       {session.role === "ADMIN" ? (
         <AdminDashboard
-          password={session.password}
+          accessToken={session.accessToken}
           username={session.username}
         />
       ) : (
         session.customerId ? (
           <CustomerDashboard
             customerId={session.customerId}
-            password={session.password}
+            accessToken={session.accessToken}
             username={session.username}
           />
         ) : (

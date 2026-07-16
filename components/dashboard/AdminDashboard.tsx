@@ -6,7 +6,7 @@ import { AddAccountForm } from "@/components/dashboard/AddAccountForm";
 import { AddCustomerForm } from "@/components/dashboard/AddCustomerForm";
 import { AdminManagement } from "@/components/dashboard/AdminManagement";
 import { TransactionHistory } from "@/components/dashboard/TransactionHistory";
-import { apiClient } from "@/lib/api/client";
+import { apiClient, bearerHeaders } from "@/lib/api/client";
 import type {
   Account,
   AdminDeleteTarget,
@@ -14,18 +14,18 @@ import type {
   ApiError,
   Customer,
   CustomerOnboardingResponse,
-  LoginRequest,
+  AuthenticatedSession,
 } from "@/lib/api/types";
 import styles from "./AdminDashboard.module.scss";
 
-type AdminDashboardProps = LoginRequest;
+type AdminDashboardProps = AuthenticatedSession;
 
 const currency = new Intl.NumberFormat("en-US", {
   currency: "USD",
   style: "currency",
 });
 
-export function AdminDashboard({ password, username }: AdminDashboardProps) {
+export function AdminDashboard({ accessToken, username }: AdminDashboardProps) {
   const [overview, setOverview] = useState<AdminOverviewResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -42,8 +42,11 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
       try {
         const { data } = await apiClient.post<AdminOverviewResponse>(
           "/admin/overview",
-          { password, username },
-          { signal: controller.signal },
+          undefined,
+          {
+            headers: bearerHeaders(accessToken),
+            signal: controller.signal,
+          },
         );
         setOverview(data);
       } catch (requestError) {
@@ -62,7 +65,7 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
 
     loadOverview();
     return () => controller.abort();
-  }, [password, username]);
+  }, [accessToken]);
 
   const totalBalance = useMemo(
     () =>
@@ -195,8 +198,7 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
 
       {isAddingCustomer ? (
         <AddCustomerForm
-          adminPassword={password}
-          adminUsername={username}
+          accessToken={accessToken}
           onCancel={() => setIsAddingCustomer(false)}
           onCreated={handleCustomerCreated}
         />
@@ -204,8 +206,7 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
 
       {selectedCustomer ? (
         <AddAccountForm
-          adminPassword={password}
-          adminUsername={username}
+          accessToken={accessToken}
           customer={selectedCustomer}
           onCancel={() => setSelectedCustomer(null)}
           onCreated={handleAccountCreated}
@@ -332,7 +333,7 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
             onDeleted={handleDeleted}
             onOpenAccount={handleOpenAccount}
             overview={overview}
-            password={password}
+            accessToken={accessToken}
             username={username}
           />
           <TransactionHistory

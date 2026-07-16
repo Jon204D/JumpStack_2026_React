@@ -30,8 +30,9 @@ export function LoginForm() {
         { password, username },
       );
       signIn({
+        accessToken: result.accessToken,
         customerId: result.customerId,
-        password,
+        expiresAt: Date.now() + result.expiresIn * 1000,
         role: result.role,
         username: result.username,
       });

@@ -15,8 +15,16 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = {
+  accessToken: string;
   customerId: string | null;
+  expiresIn: number;
   role: Role;
+  tokenType: "Bearer";
+  username: string;
+};
+
+export type AuthenticatedSession = {
+  accessToken: string;
   username: string;
 };
 
@@ -60,7 +68,6 @@ export type CustomerOnboardingResponse = {
 };
 
 export type AdminCreateCustomerRequest = {
-  admin: LoginRequest;
   onboarding: OnboardCustomerRequest;
 };
 
@@ -70,7 +77,6 @@ export type UpdateCustomerRequest = {
 };
 
 export type AdminUpdateCustomerRequest = {
-  admin: LoginRequest;
   customerId: string;
   update: UpdateCustomerRequest;
 };
@@ -82,7 +88,6 @@ export type CreateAccountRequest = {
 
 export type AdminCreateAccountRequest = {
   account: CreateAccountRequest;
-  admin: LoginRequest;
   customerId: string;
 };
 
@@ -98,7 +103,6 @@ export type BankTransaction = {
 };
 
 export type CustomerOverviewRequest = {
-  credentials: LoginRequest;
   customerId: string;
 };
 
@@ -121,7 +125,6 @@ export type MoneyMovementOperation =
     };
 
 export type CustomerMoneyMovementRequest = {
-  credentials: LoginRequest;
   operation: MoneyMovementOperation;
 };
 
@@ -135,7 +138,6 @@ export type AdminDeleteTarget =
   | { customerId: string; kind: "CUSTOMER" };
 
 export type AdminDeleteRequest = {
-  admin: LoginRequest;
   target: AdminDeleteTarget;
 };
 

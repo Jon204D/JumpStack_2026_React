@@ -3,17 +3,17 @@
 import axios from "axios";
 import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { apiClient } from "@/lib/api/client";
+import { apiClient, bearerHeaders } from "@/lib/api/client";
 import type {
   AdminUpdateCustomerRequest,
   ApiError,
   Customer,
-  LoginRequest,
+  AuthenticatedSession,
   UpdateCustomerRequest,
 } from "@/lib/api/types";
 import styles from "./EditCustomerForm.module.scss";
 
-type EditCustomerFormProps = LoginRequest & {
+type EditCustomerFormProps = AuthenticatedSession & {
   customer: Customer;
   onCancel: () => void;
   onUpdated: (customer: Customer, message: string) => void;
@@ -25,8 +25,7 @@ export function EditCustomerForm({
   customer,
   onCancel,
   onUpdated,
-  password: adminPassword,
-  username: adminUsername,
+  accessToken,
 }: EditCustomerFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -71,7 +70,6 @@ export function EditCustomerForm({
     if (password) update.password = password;
 
     const request: AdminUpdateCustomerRequest = {
-      admin: { password: adminPassword, username: adminUsername },
       customerId: customer.id,
       update,
     };
@@ -81,6 +79,7 @@ export function EditCustomerForm({
       const { data } = await apiClient.patch<Customer>(
         "/admin/customers",
         request,
+        { headers: bearerHeaders(accessToken) },
       );
       const changes = [
         usernameChanged ? "username updated" : null,

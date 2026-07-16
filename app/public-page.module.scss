@@ -1,0 +1,103 @@
+@use "../styles/tokens" as *;
+@use "../styles/mixins" as *;
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: $brand;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hero {
+  @include content-width;
+  max-width: 980px;
+  padding-block: clamp(5rem, 11vw, 9rem);
+
+  h1 {
+    max-width: 900px;
+    margin: 0;
+    font-size: clamp(3.4rem, 8vw, 6.7rem);
+    line-height: 0.98;
+    letter-spacing: -0.065em;
+  }
+
+  > p:last-child {
+    max-width: 760px;
+    margin: 2rem 0 0;
+    color: $muted;
+    font-size: clamp(1.12rem, 2vw, 1.35rem);
+    line-height: 1.7;
+  }
+}
+
+.story {
+  @include content-width;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: clamp(2rem, 8vw, 8rem);
+  padding-block: clamp(4rem, 8vw, 7rem);
+  border-block: 1px solid $border;
+
+  h2 { margin: 0; font-size: clamp(2rem, 4vw, 3.4rem); letter-spacing: -0.045em; }
+  > p { margin: 0; color: $muted; font-size: 1.12rem; line-height: 1.8; }
+}
+
+.cards,
+.contactGrid {
+  @include content-width;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding-block: clamp(4rem, 9vw, 7rem);
+
+  article {
+    min-height: 260px;
+    padding: 1.6rem;
+    background: $surface;
+    border: 1px solid $border;
+    border-radius: $radius-md;
+    box-shadow: $shadow-sm;
+  }
+
+  span { color: $brand; font-family: var(--font-geist-mono), monospace; font-size: 0.8rem; }
+  h2 { margin: 4rem 0 0.75rem; font-size: 1.45rem; letter-spacing: -0.03em; }
+  p { margin: 0; color: $muted; line-height: 1.65; }
+  a { display: inline-block; margin-top: 1.4rem; color: $brand; font-weight: 700; text-decoration: none; }
+}
+
+.contactGrid article { min-height: 330px; }
+
+.cta,
+.notice {
+  @include content-width;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(4rem, 8vw, 7rem);
+  padding: clamp(1.6rem, 4vw, 3rem);
+  background: $ink;
+  border-radius: $radius-lg;
+
+  h2 { max-width: 680px; margin: 0; color: #fff; font-size: clamp(1.8rem, 4vw, 3.2rem); letter-spacing: -0.045em; }
+  .eyebrow { color: #8fe0d7; }
+}
+
+.notice {
+  display: block;
+  color: #fff;
+  strong { font-size: 1.25rem; }
+  p { max-width: 760px; margin-bottom: 0; color: rgba(255, 255, 255, 0.72); line-height: 1.65; }
+}
+
+@include tablet {
+  .cards, .contactGrid { grid-template-columns: 1fr; }
+  .story { grid-template-columns: 1fr; }
+}
+
+@include mobile {
+  .hero h1 { font-size: clamp(3rem, 16vw, 4.5rem); }
+  .cta { align-items: flex-start; flex-direction: column; }
+}

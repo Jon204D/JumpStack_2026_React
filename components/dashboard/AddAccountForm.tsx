@@ -3,7 +3,7 @@
 import axios from "axios";
 import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { apiClient } from "@/lib/api/client";
+import { apiClient, bearerHeaders } from "@/lib/api/client";
 import type {
   Account,
   AccountType,
@@ -14,8 +14,7 @@ import type {
 import styles from "./AddAccountForm.module.scss";
 
 type AddAccountFormProps = {
-  adminPassword: string;
-  adminUsername: string;
+  accessToken: string;
   customer: Customer;
   onCancel: () => void;
   onCreated: (account: Account) => void;
@@ -26,8 +25,7 @@ type FieldErrors = Record<string, string>;
 const balancePattern = /^\d{1,15}(\.\d{1,2})?$/;
 
 export function AddAccountForm({
-  adminPassword,
-  adminUsername,
+  accessToken,
   customer,
   onCancel,
   onCreated,
@@ -70,7 +68,6 @@ export function AddAccountForm({
         startingBalance: Number(balanceInput),
         type,
       },
-      admin: { password: adminPassword, username: adminUsername },
       customerId: customer.id,
     };
 
@@ -78,6 +75,7 @@ export function AddAccountForm({
       const { data } = await apiClient.post<Account>(
         "/admin/accounts",
         request,
+        { headers: bearerHeaders(accessToken) },
       );
       form.reset();
       onCreated(data);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendUrl, basicAuthorization } from "@/lib/api/server";
+import { backendUrl, requestBearerAuthorization } from "@/lib/api/server";
 import type {
   Account,
   ApiError,
@@ -31,8 +31,7 @@ export async function POST(request: Request) {
     return errorResponse(400, "Transaction details are required.");
   }
 
-  const username = payload.credentials?.username?.trim();
-  const password = payload.credentials?.password;
+  const authorization = requestBearerAuthorization(request);
   const operation = payload.operation;
   const supportedType =
     operation?.type === "DEPOSIT" ||
@@ -40,8 +39,7 @@ export async function POST(request: Request) {
     operation?.type === "TRANSFER";
 
   if (
-    !username ||
-    !password ||
+    !authorization ||
     !operation ||
     !supportedType ||
     !(operation.amount > 0)
@@ -52,7 +50,7 @@ export async function POST(request: Request) {
   const requestConfig = {
     headers: {
       Accept: "application/json",
-      Authorization: basicAuthorization(username, password),
+      Authorization: authorization,
       "Content-Type": "application/json",
     },
     timeout: 10_000,

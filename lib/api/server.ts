@@ -10,6 +10,7 @@ export function backendUrl(path: string) {
   return new URL(path, baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`);
 }
 
-export function basicAuthorization(username: string, password: string) {
-  return `Basic ${Buffer.from(`${username}:${password}`, "utf8").toString("base64")}`;
+export function requestBearerAuthorization(request: Request) {
+  const authorization = request.headers.get("authorization");
+  return authorization?.startsWith("Bearer ") ? authorization : null;
 }

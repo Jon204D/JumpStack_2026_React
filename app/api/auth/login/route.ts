@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendUrl, basicAuthorization } from "@/lib/api/server";
+import { backendUrl } from "@/lib/api/server";
 import type { ApiError, LoginRequest, LoginResponse } from "@/lib/api/types";
 
 const jsonHeaders = {
@@ -34,12 +34,13 @@ export async function POST(request: Request) {
   }
 
   try {
-    const backendResponse = await axios.get<LoginResponse | ApiError>(
-      backendUrl("/api/auth/me").toString(),
+    const backendResponse = await axios.post<LoginResponse | ApiError>(
+      backendUrl("/api/auth/login").toString(),
+      { password, username },
       {
         headers: {
           Accept: "application/json",
-          Authorization: basicAuthorization(username, password),
+          "Content-Type": "application/json",
         },
         timeout: 10_000,
         validateStatus: () => true,
@@ -64,13 +65,9 @@ export async function POST(request: Request) {
       return errorResponse(backendResponse.status, message);
     }
 
-    const identity = backendResponse.data as LoginResponse;
-    const response: LoginResponse = {
-      customerId: identity.customerId,
-      role: identity.role,
-      username: identity.username,
-    };
-    return Response.json(response, { headers: jsonHeaders });
+    return Response.json(backendResponse.data as LoginResponse, {
+      headers: jsonHeaders,
+    });
   } catch {
     return errorResponse(
       503,

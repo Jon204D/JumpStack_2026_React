@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendUrl, basicAuthorization } from "@/lib/api/server";
+import { backendUrl, requestBearerAuthorization } from "@/lib/api/server";
 import type {
   Account,
   AdminCreateAccountRequest,
@@ -30,13 +30,10 @@ export async function POST(request: Request) {
     return errorResponse(400, "Account details are required.");
   }
 
-  const adminUsername = payload.admin?.username?.trim();
-  const adminPassword = payload.admin?.password;
+  const authorization = requestBearerAuthorization(request);
   const customerId = payload.customerId?.trim();
 
-  if (!adminUsername || !adminPassword) {
-    return errorResponse(401, "Administrator authentication is required.");
-  }
+  if (!authorization) return errorResponse(401, "A Bearer token is required.");
 
   if (
     !customerId ||
@@ -59,7 +56,7 @@ export async function POST(request: Request) {
       {
         headers: {
           Accept: "application/json",
-          Authorization: basicAuthorization(adminUsername, adminPassword),
+          Authorization: authorization,
           "Content-Type": "application/json",
         },
         timeout: 10_000,

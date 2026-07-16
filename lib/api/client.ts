@@ -8,3 +8,7 @@ export const apiClient = axios.create({
   },
   timeout: 10_000,
 });
+
+export function bearerHeaders(accessToken: string) {
+  return { Authorization: `Bearer ${accessToken}` };
+}
