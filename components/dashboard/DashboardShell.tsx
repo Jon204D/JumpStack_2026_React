@@ -18,6 +18,7 @@ const adminNavigation = [
   { href: "#overview", label: "Overview" },
   { href: "#customers", label: "Customers" },
   { href: "#accounts", label: "Accounts" },
+  { href: "#activity", label: "Activity" },
 ];
 const customerNavigation = [
   { href: "#overview", label: "Overview" },

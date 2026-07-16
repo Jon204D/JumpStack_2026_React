@@ -39,6 +39,7 @@ export type Account = {
 export type AdminOverviewResponse = {
   accounts: Account[];
   customers: Customer[];
+  transactions: BankTransaction[];
 };
 
 export type InitialAccountRequest = {

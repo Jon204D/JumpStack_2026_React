@@ -4,6 +4,7 @@ import type {
   Account,
   AdminOverviewResponse,
   ApiError,
+  BankTransaction,
   Customer,
   LoginRequest,
 } from "@/lib/api/types";
@@ -49,7 +50,8 @@ export async function POST(request: Request) {
   };
 
   try {
-    const [customersResponse, accountsResponse] = await Promise.all([
+    const [customersResponse, accountsResponse, transactionsResponse] =
+      await Promise.all([
       axios.get<Customer[] | ApiError>(
         backendUrl("/api/customers").toString(),
         requestConfig,
@@ -58,11 +60,17 @@ export async function POST(request: Request) {
         backendUrl("/api/accounts").toString(),
         requestConfig,
       ),
+      axios.get<BankTransaction[] | ApiError>(
+        backendUrl("/api/transactions").toString(),
+        requestConfig,
+      ),
     ]);
 
-    const failedResponse = [customersResponse, accountsResponse].find(
-      (response) => response.status < 200 || response.status >= 300,
-    );
+    const failedResponse = [
+      customersResponse,
+      accountsResponse,
+      transactionsResponse,
+    ].find((response) => response.status < 200 || response.status >= 300);
 
     if (failedResponse) {
       const fallback =
@@ -81,6 +89,7 @@ export async function POST(request: Request) {
     const response: AdminOverviewResponse = {
       accounts: accountsResponse.data as Account[],
       customers: customersResponse.data as Customer[],
+      transactions: transactionsResponse.data as BankTransaction[],
     };
 
     return Response.json(response, { headers: jsonHeaders });

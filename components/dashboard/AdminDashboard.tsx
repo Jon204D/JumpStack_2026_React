@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AddAccountForm } from "@/components/dashboard/AddAccountForm";
 import { AddCustomerForm } from "@/components/dashboard/AddCustomerForm";
 import { AdminManagement } from "@/components/dashboard/AdminManagement";
+import { TransactionHistory } from "@/components/dashboard/TransactionHistory";
 import { apiClient } from "@/lib/api/client";
 import type {
   Account,
@@ -75,11 +76,16 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
   function handleCustomerCreated(result: CustomerOnboardingResponse) {
     setOverview((current) =>
       current
-        ? {
+          ? {
             accounts: [...result.accounts, ...current.accounts],
             customers: [result.customer, ...current.customers],
+            transactions: current.transactions,
           }
-        : { accounts: result.accounts, customers: [result.customer] },
+        : {
+            accounts: result.accounts,
+            customers: [result.customer],
+            transactions: [],
+          },
     );
     const accountNumbers = result.accounts
       .map((account) => account.accountNumber)
@@ -108,7 +114,7 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
     setOverview((current) =>
       current
         ? { ...current, accounts: [account, ...current.accounts] }
-        : { accounts: [account], customers: [] },
+        : { accounts: [account], customers: [], transactions: [] },
     );
     setSuccess(
       `${account.accountNumber} is now open for ${selectedCustomer?.username ?? "the customer"}.`,
@@ -128,6 +134,7 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
           customers: current.customers.filter(
             (customer) => customer.id !== target.customerId,
           ),
+          transactions: current.transactions,
         };
       }
 
@@ -300,13 +307,25 @@ export function AdminDashboard({ password, username }: AdminDashboardProps) {
       </div>
 
       {overview ? (
-        <AdminManagement
-          onDeleted={handleDeleted}
-          onOpenAccount={handleOpenAccount}
-          overview={overview}
-          password={password}
-          username={username}
-        />
+        <>
+          <AdminManagement
+            onDeleted={handleDeleted}
+            onOpenAccount={handleOpenAccount}
+            overview={overview}
+            password={password}
+            username={username}
+          />
+          <TransactionHistory
+            accounts={overview.accounts}
+            customers={overview.customers}
+            description="Review every recorded movement across the bank, including retained history for closed accounts."
+            eyebrow="Audit trail"
+            id="activity"
+            mode="ADMIN"
+            title="Bank-wide transaction history"
+            transactions={overview.transactions}
+          />
+        </>
       ) : null}
     </section>
   );

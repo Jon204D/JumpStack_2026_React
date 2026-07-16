@@ -3,10 +3,10 @@
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MoneyMovementForm } from "@/components/dashboard/MoneyMovementForm";
+import { TransactionHistory } from "@/components/dashboard/TransactionHistory";
 import { apiClient } from "@/lib/api/client";
 import type {
   ApiError,
-  BankTransaction,
   CustomerOverviewRequest,
   CustomerOverviewResponse,
   LoginRequest,
@@ -20,11 +20,6 @@ type CustomerDashboardProps = LoginRequest & {
 const currency = new Intl.NumberFormat("en-US", {
   currency: "USD",
   style: "currency",
-});
-
-const dateTime = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "medium",
-  timeStyle: "short",
 });
 
 export function CustomerDashboard({
@@ -106,66 +101,9 @@ export function CustomerDashboard({
     [overview],
   );
 
-  const ownedAccountNumbers = useMemo(
-    () =>
-      new Set(
-        overview?.accounts.map((account) => account.accountNumber) ?? [],
-      ),
-    [overview],
-  );
-
   async function handleMovementCompleted(message: string) {
     setSuccess(message);
     await refreshOverview();
-  }
-
-  function transactionDetails(transaction: BankTransaction) {
-    if (transaction.type === "DEPOSIT") {
-      return {
-        amountClass: styles.credit,
-        amountPrefix: "+",
-        label: "Deposit",
-        note: `To ${transaction.destinationAccountNumber}`,
-      };
-    }
-    if (transaction.type === "WITHDRAWAL") {
-      return {
-        amountClass: styles.debit,
-        amountPrefix: "−",
-        label: "Withdrawal",
-        note: `From ${transaction.sourceAccountNumber}`,
-      };
-    }
-
-    const ownsSource = ownedAccountNumbers.has(
-      transaction.sourceAccountNumber ?? "",
-    );
-    const ownsDestination = ownedAccountNumbers.has(
-      transaction.destinationAccountNumber ?? "",
-    );
-
-    if (ownsSource && ownsDestination) {
-      return {
-        amountClass: styles.neutral,
-        amountPrefix: "",
-        label: "Transfer between your accounts",
-        note: `${transaction.sourceAccountNumber} → ${transaction.destinationAccountNumber}`,
-      };
-    }
-
-    return ownsSource
-      ? {
-          amountClass: styles.debit,
-          amountPrefix: "−",
-          label: "Transfer sent",
-          note: `To ${transaction.destinationAccountNumber}`,
-        }
-      : {
-          amountClass: styles.credit,
-          amountPrefix: "+",
-          label: "Transfer received",
-          note: `From ${transaction.sourceAccountNumber}`,
-        };
   }
 
   return (
@@ -247,51 +185,15 @@ export function CustomerDashboard({
             username={username}
           />
 
-          <section className={styles.activity} id="activity" aria-labelledby="activity-title">
-            <div className={styles.sectionHeading}>
-              <div>
-                <p>Recent activity</p>
-                <h2 id="activity-title">Transaction history</h2>
-              </div>
-              <span>{overview.transactions.length} records</span>
-            </div>
-
-            {overview.transactions.length ? (
-              <ul className={styles.transactionList}>
-                {overview.transactions.slice(0, 12).map((transaction) => {
-                  const details = transactionDetails(transaction);
-
-                  return (
-                    <li key={transaction.id}>
-                      <span className={styles.transactionIcon} aria-hidden="true">
-                        {transaction.type === "DEPOSIT"
-                          ? "+"
-                          : transaction.type === "WITHDRAWAL"
-                            ? "−"
-                            : "→"}
-                      </span>
-                      <div>
-                        <strong>{details.label}</strong>
-                        <span>{details.note}</span>
-                        <time dateTime={transaction.createdAt}>
-                          {dateTime.format(new Date(transaction.createdAt))}
-                        </time>
-                      </div>
-                      <strong className={details.amountClass}>
-                        {details.amountPrefix}
-                        {currency.format(Number(transaction.amount))}
-                      </strong>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <div className={styles.emptyActivity}>
-                <strong>No transactions yet</strong>
-                <span>Your first deposit, withdrawal, or transfer will appear here.</span>
-              </div>
-            )}
-          </section>
+          <TransactionHistory
+            accounts={overview.accounts}
+            description="Filter your deposits, withdrawals, and transfers by account or transaction type."
+            eyebrow="Account activity"
+            id="activity"
+            mode="CUSTOMER"
+            title="Transaction history"
+            transactions={overview.transactions}
+          />
         </div>
       ) : null}
     </section>

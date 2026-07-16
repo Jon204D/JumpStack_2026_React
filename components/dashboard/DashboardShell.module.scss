@@ -164,7 +164,7 @@
   .shell { grid-template-columns: 1fr; }
   .sidebar { min-height: auto; padding: 1rem; }
   .sidebar nav { margin-top: 1.25rem; }
-  .sidebar nav ul { grid-template-columns: repeat(3, 1fr); }
+  .sidebar nav ul { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
   .sidebarNote { display: none; }
 }
 

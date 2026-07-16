@@ -1,0 +1,135 @@
+@use "../../styles/tokens" as *;
+@use "../../styles/mixins" as *;
+
+.history {
+  padding: 1.4rem;
+  margin-top: 1rem;
+  scroll-margin-top: 1rem;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+.heading {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  p {
+    margin: 0 0 0.3rem;
+    color: $brand;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  h2 { margin: 0; font-size: 1.35rem; letter-spacing: -0.035em; }
+  > div > span { display: block; max-width: 680px; margin-top: 0.4rem; color: $muted; font-size: 0.75rem; line-height: 1.5; }
+  > strong { padding: 0.3rem 0.55rem; color: $muted; font-size: 0.68rem; background: $canvas; border-radius: 999px; white-space: nowrap; }
+}
+
+.filters {
+  display: grid;
+  margin-top: 1.2rem;
+  grid-template-columns: minmax(220px, 1.5fr) repeat(3, minmax(130px, 0.65fr));
+  gap: 0.65rem;
+
+  label { display: grid; gap: 0.3rem; }
+  label > span { color: $muted; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+
+  input,
+  select {
+    width: 100%;
+    min-height: 43px;
+    padding: 0.65rem 0.75rem;
+    color: $ink;
+    background: $canvas;
+    border: 1px solid $border;
+    border-radius: $radius-sm;
+    outline: none;
+
+    &:focus { border-color: $brand; box-shadow: 0 0 0 3px rgba($brand, 0.1); }
+  }
+}
+
+.history[data-mode="CUSTOMER"] {
+  margin-top: 0;
+
+  .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .search { grid-column: 1 / -1; }
+  .transactionList li { grid-template-columns: auto minmax(0, 1fr); }
+  .transactionList li > time,
+  .transactionList li > strong { grid-column: 2; text-align: left; }
+}
+
+.transactionList { padding: 0; margin: 1rem 0 0; list-style: none; }
+
+.transactionList li {
+  display: grid;
+  padding: 0.85rem 0;
+  grid-template-columns: auto minmax(180px, 1fr) minmax(145px, auto) minmax(90px, auto);
+  gap: 0.8rem;
+  align-items: center;
+  border-bottom: 1px solid rgba($border, 0.75);
+
+  &:last-child { padding-bottom: 0; border-bottom: 0; }
+  > time { color: $muted; font-size: 0.66rem; }
+  > strong { font-size: 0.8rem; text-align: right; }
+}
+
+.transactionIcon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  color: $brand;
+  font-weight: 850;
+  background: rgba($brand, 0.09);
+  border-radius: 50%;
+}
+
+.transactionDetails {
+  display: grid;
+  gap: 0.15rem;
+
+  strong { font-size: 0.78rem; }
+  span,
+  small { color: $muted; font-size: 0.65rem; }
+  small { color: $brand; }
+}
+
+.credit { color: $success; }
+.debit { color: $danger; }
+.neutral { color: $ink; }
+
+.emptyState {
+  display: grid;
+  min-height: 220px;
+  place-content: center;
+  gap: 0.35rem;
+  color: $muted;
+  text-align: center;
+
+  strong { color: $ink; }
+  span { max-width: 330px; font-size: 0.75rem; line-height: 1.5; }
+}
+
+@include tablet {
+  .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .search { grid-column: 1 / -1; }
+}
+
+@include mobile {
+  .history { padding: 1rem; }
+  .heading { flex-direction: column; }
+  .filters { grid-template-columns: 1fr; }
+  .search { grid-column: auto; }
+  .history[data-mode="CUSTOMER"] .filters { grid-template-columns: 1fr; }
+  .history[data-mode="CUSTOMER"] .search { grid-column: auto; }
+  .transactionList li { grid-template-columns: auto 1fr; }
+  .transactionList li > time { grid-column: 2; }
+  .transactionList li > strong { grid-column: 2; text-align: left; }
+}
