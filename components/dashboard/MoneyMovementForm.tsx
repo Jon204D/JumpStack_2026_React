@@ -155,13 +155,14 @@ export function MoneyMovementForm({
         ) : null}
 
         <div className={styles.fields}>
-          <label>
+          <label htmlFor="movement-account-number">
             <span>{type === "TRANSFER" ? "From account" : "Account"}</span>
             <select
               aria-describedby={
                 fieldErrors.accountNumber ? "movement-account-error" : undefined
               }
               aria-invalid={Boolean(fieldErrors.accountNumber)}
+              id="movement-account-number"
               name="accountNumber"
               onChange={(event) => setAccountNumber(event.target.value)}
               value={accountNumber}
@@ -184,7 +185,7 @@ export function MoneyMovementForm({
           </label>
 
           {type === "TRANSFER" ? (
-            <label>
+            <label htmlFor="movement-destination-account">
               <span>To account</span>
               <input
                 aria-describedby={
@@ -194,6 +195,7 @@ export function MoneyMovementForm({
                 }
                 aria-invalid={Boolean(fieldErrors.destinationAccountNumber)}
                 autoComplete="off"
+                id="movement-destination-account"
                 list="customer-account-numbers"
                 name="destinationAccountNumber"
                 onChange={(event) =>
@@ -222,7 +224,7 @@ export function MoneyMovementForm({
             </label>
           ) : null}
 
-          <label>
+          <label htmlFor="movement-amount">
             <span>Amount</span>
             <div className={styles.moneyInput}>
               <span aria-hidden="true">$</span>
@@ -231,6 +233,7 @@ export function MoneyMovementForm({
                   fieldErrors.amount ? "movement-amount-error" : undefined
                 }
                 aria-invalid={Boolean(fieldErrors.amount)}
+                id="movement-amount"
                 inputMode="decimal"
                 min="0.01"
                 name="amount"
